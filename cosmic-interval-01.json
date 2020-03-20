@@ -104,26 +104,6 @@
       }
     }
   },
-  "bt0RSSI": {
-    "action": "reading",
-    "type": "scalar",
-    "value": 0,
-    "unit": "dBm",
-    "alarm": {
-      "value": 0,
-      "limits": {
-        "lolo": -70,
-        "low": -60,
-        "high": 0,
-        "hihi": 30
-      },
-      "notify": {
-        "name": "",
-        "number": "",
-        "time": 0
-      }
-    }
-  },
   "nsamples": {
     "action": "setting",
     "type": "scalar",

@@ -1,8 +1,22 @@
 [
     {
-        "id": "5f562f66.a301e",
+        "id": "662f1a84.4a0024",
         "type": "tab",
-        "label": "blinky-lite-tray",
+        "label": "Global",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "ac85ba6c.c4f548",
+        "type": "tab",
+        "label": "Cube-01",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "5d5fc264.fc823c",
+        "type": "tab",
+        "label": "web-app",
         "disabled": false,
         "info": ""
     },
@@ -201,7 +215,7 @@
         "id": "21ff842d.62f36c",
         "type": "serial-port",
         "z": "",
-        "serialport": "$(BT0SERIALPORT)",
+        "serialport": "/dev/rfcomm0",
         "serialbaud": "115200",
         "databits": "8",
         "parity": "none",
@@ -239,7 +253,7 @@
         "id": "44b51478.9c022c",
         "type": "websocket-listener",
         "z": "",
-        "path": "/websocket",
+        "path": "/app/websocket",
         "wholemsg": "false"
     },
     {
@@ -250,711 +264,6 @@
         "secret": "$(JWTKEYSECRET)"
     },
     {
-        "id": "ea743ee6.d8b55",
-        "type": "serial in",
-        "z": "5f562f66.a301e",
-        "name": "Teensy",
-        "serial": "21ff842d.62f36c",
-        "x": 70,
-        "y": 300,
-        "wires": [
-            [
-                "d5761f6c.c46e6"
-            ]
-        ]
-    },
-    {
-        "id": "93049b70.2dc5c8",
-        "type": "mqtt out",
-        "z": "5f562f66.a301e",
-        "name": "Publish Readings",
-        "topic": "$(MQTTPUBLISHTOPIC)",
-        "qos": "0",
-        "retain": "false",
-        "broker": "79250bf3.365cc4",
-        "x": 1010,
-        "y": 300,
-        "wires": []
-    },
-    {
-        "id": "3f988ea4.7ee392",
-        "type": "serial out",
-        "z": "5f562f66.a301e",
-        "name": "Teensy",
-        "serial": "21ff842d.62f36c",
-        "x": 660,
-        "y": 460,
-        "wires": []
-    },
-    {
-        "id": "8cda9011.eab33",
-        "type": "mqtt in",
-        "z": "5f562f66.a301e",
-        "name": "Subscribe Settings",
-        "topic": "$(MQTTSUBSCRIBETOPIC)",
-        "qos": "0",
-        "datatype": "auto",
-        "broker": "79250bf3.365cc4",
-        "x": 110,
-        "y": 40,
-        "wires": [
-            [
-                "dc36009e.fdeeb"
-            ]
-        ]
-    },
-    {
-        "id": "dc36009e.fdeeb",
-        "type": "json",
-        "z": "5f562f66.a301e",
-        "name": "",
-        "property": "payload",
-        "action": "",
-        "pretty": false,
-        "x": 270,
-        "y": 40,
-        "wires": [
-            [
-                "7461da25.d86ac4"
-            ]
-        ]
-    },
-    {
-        "id": "5902d0c0.241a6",
-        "type": "file",
-        "z": "5f562f66.a301e",
-        "name": "Write initSettings.json",
-        "filename": "initSettings.json",
-        "appendNewline": true,
-        "createDir": false,
-        "overwriteFile": "true",
-        "encoding": "none",
-        "x": 900,
-        "y": 40,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "f3f3f15.081c31",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "createSettings",
-        "func": "var device = flow.get('device');\n//node.warn('newSetting = ' + flow.get('newSetting').toString())\n\nvar bufsize = 8;\nvar buffer = new ArrayBuffer(bufsize);\nvar settingsView = new DataView(buffer);\nsettingsView.setInt32(0, flow.get('newSetting'), true);\nsettingsView.setFloat32(4, device.nsamples.value, true);\n\nreturn {topic:'settings',payload:Buffer.from(buffer)};\n",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 460,
-        "y": 460,
-        "wires": [
-            [
-                "3f988ea4.7ee392"
-            ]
-        ]
-    },
-    {
-        "id": "6eaa13e9.4147bc",
-        "type": "inject",
-        "z": "5f562f66.a301e",
-        "name": "",
-        "topic": "initSettings",
-        "payload": "",
-        "payloadType": "date",
-        "repeat": "",
-        "crontab": "",
-        "once": true,
-        "onceDelay": "1",
-        "x": 140,
-        "y": 240,
-        "wires": [
-            [
-                "163af492.5e952b"
-            ]
-        ]
-    },
-    {
-        "id": "163af492.5e952b",
-        "type": "file in",
-        "z": "5f562f66.a301e",
-        "name": "Read initSettings.json",
-        "filename": "initSettings.json",
-        "format": "utf8",
-        "chunk": false,
-        "sendError": false,
-        "encoding": "none",
-        "x": 380,
-        "y": 240,
-        "wires": [
-            [
-                "53c95857.5f3d68"
-            ]
-        ]
-    },
-    {
-        "id": "53c95857.5f3d68",
-        "type": "json",
-        "z": "5f562f66.a301e",
-        "name": "",
-        "property": "payload",
-        "action": "",
-        "pretty": false,
-        "x": 570,
-        "y": 240,
-        "wires": [
-            [
-                "30f384ea.cf21fc"
-            ]
-        ]
-    },
-    {
-        "id": "30f384ea.cf21fc",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Save initSettings in Memory",
-        "func": "flow.set('device', msg.payload);\nflow.set('newSetting', 1);\n\nvar restfulDevice = \n{\n    deviceType  : msg.payload.deviceType,\n    name        : msg.payload.name\n};\n\nglobal.set('restfulDevice', restfulDevice);\nreturn null;",
-        "outputs": 0,
-        "noerr": 0,
-        "x": 780,
-        "y": 240,
-        "wires": []
-    },
-    {
-        "id": "d5761f6c.c46e6",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Read Serial Handshake",
-        "func": "var ib;\nvar device = flow.get('device');\nvar dataView     = new DataView(new ArrayBuffer(4));\nvar newSettingDone = 0;\nvar cubeInit = 0;\n\nfor (ib = 0; ib < 4; ++ib)   dataView.setUint8(ib, msg.payload[0 * 4 + 3 - ib]);\ncubeInit = dataView.getInt32(0);\nfor (ib = 0; ib < 4; ++ib)   dataView.setUint8(ib, msg.payload[1 * 4 + 3 - ib]);\nnewSettingDone = dataView.getInt32(0);\n\nvar newMsg = {topic:'userData', payload:[]};\nfor (var ii = 8; ii < msg.payload.length; ++ii) newMsg.payload[ii - 8] = msg.payload[ii];\n\nif (newSettingDone > 0) \n{\n    flow.set('newSetting', 0);\n}\nif(cubeInit == 1) flow.set('newSetting', 1);\n//node.warn('newSettingDone = ' + newSettingDone.toString());\n//node.warn('cubeInit = ' + cubeInit.toString());\n\nreturn newMsg;\n",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 250,
-        "y": 300,
-        "wires": [
-            [
-                "d6a8ff2a.f4acd",
-                "f3f3f15.081c31"
-            ]
-        ]
-    },
-    {
-        "id": "f69c600b.9542",
-        "type": "exec",
-        "z": "5f562f66.a301e",
-        "command": "iwconfig",
-        "addpay": false,
-        "append": "",
-        "useSpawn": "false",
-        "timer": "",
-        "oldrc": false,
-        "name": "",
-        "x": 280,
-        "y": 860,
-        "wires": [
-            [
-                "afd71a05.ebd4e8"
-            ],
-            [],
-            []
-        ]
-    },
-    {
-        "id": "5b86fa96.034764",
-        "type": "inject",
-        "z": "5f562f66.a301e",
-        "name": "",
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "repeat": "5",
-        "crontab": "",
-        "once": true,
-        "onceDelay": 0.1,
-        "x": 120,
-        "y": 860,
-        "wires": [
-            [
-                "f69c600b.9542",
-                "7fdb0a6e.d56b14"
-            ]
-        ]
-    },
-    {
-        "id": "afd71a05.ebd4e8",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Get Signal Quality",
-        "func": "var info = msg.payload;\nvar linkStartIndex  = info.indexOf('Link Quality=');\nvar levelStartIndex = info.indexOf('Signal level=');\nvar linkStopIndex   = info.indexOf('/70');\nvar levelStopIndex   = info.lastIndexOf('dBm');\nvar linkQuality = Number(info.substring(linkStartIndex + 13, linkStopIndex));\nvar signalLevel =  Number(info.substring(levelStartIndex + 13, levelStopIndex - 1));\nvar ssid = info.substring(info.indexOf('ESSID') + 7);\nssid = ssid.substring(0,ssid.indexOf('\"'));\nvar val = {linkQuality : linkQuality, signalLevel: signalLevel, ssid:ssid};\nflow.set('linkQuality',linkQuality);\nflow.set('signalLevel', signalLevel);\nflow.set('ssid', ssid);\nreturn {topic :'test',payload : val};",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 460,
-        "y": 860,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "9e954281.d9215",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Make Pretty",
-        "func": "var jsonPretty = JSON.stringify(msg.payload,null,2);\nreturn {topic: msg.payload, payload:jsonPretty};",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 710,
-        "y": 40,
-        "wires": [
-            [
-                "5902d0c0.241a6"
-            ]
-        ]
-    },
-    {
-        "id": "7461da25.d86ac4",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Settings Alarm Scan",
-        "func": "scalarAlarmScan(msg.payload, 'setting');\nflow.set('device', msg.payload); \nflow.set('newSetting', 1); \nreturn msg;\n\nfunction getActionArray(device, type, actionType)\n{\n    var actionArray = [];\n    var keys = Object.keys(device);\n    for (var ii = 0; ii < keys.length; ++ii)\n    {\n        if (device[keys[ii]].hasOwnProperty('type'))\n        {\n            if (device[keys[ii]].type == type)\n            {\n                if (device[keys[ii]].action == actionType)\n                {\n                    actionArray.push(device[keys[ii]]);\n                }\n            }\n        }\n    }\n    return actionArray;\n}\nfunction scalarAlarmScan(device, actionType)\n{\n    var actionArray = getActionArray(device, 'scalar', actionType);\n    if (actionArray.length > 0)\n    {\n        for (var ii = 0; ii < actionArray.length; ++ii)\n        {\n            actionArray[ii].alarm.value = 0;\n            if (!isNaN(actionArray[ii].value))\n            {\n                if (actionArray[ii].value < actionArray[ii].alarm.limits.low)  actionArray[ii].alarm.value = 1;\n                if (actionArray[ii].value < actionArray[ii].alarm.limits.lolo) actionArray[ii].alarm.value = 3;\n                if (actionArray[ii].value > actionArray[ii].alarm.limits.high) actionArray[ii].alarm.value = 2;\n                if (actionArray[ii].value > actionArray[ii].alarm.limits.hihi) actionArray[ii].alarm.value = 4;\n            }\n        }\n    }\n}\n",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 520,
-        "y": 40,
-        "wires": [
-            [
-                "9e954281.d9215"
-            ]
-        ]
-    },
-    {
-        "id": "9115ea87.0ca208",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Readings Alarm Scan",
-        "func": "scalarAlarmScan(msg.payload, 'reading');\nflow.set('device', msg.payload); \nvar restfulDevice  = flow.get('restfulDevice');\nmsg.topic = restfulDevice.project + '/' + restfulDevice.deviceType + '/' +restfulDevice.name + '/reading';\nreturn msg;\n\nfunction getActionArray(device, type, actionType)\n{\n    var actionArray = [];\n    var keys = Object.keys(device);\n    for (var ii = 0; ii < keys.length; ++ii)\n    {\n        if (device[keys[ii]].hasOwnProperty('type'))\n        {\n            if (device[keys[ii]].type == type)\n            {\n                if (device[keys[ii]].action == actionType)\n                {\n                    actionArray.push(device[keys[ii]]);\n                }\n            }\n        }\n    }\n    return actionArray;\n}\nfunction scalarAlarmScan(device, actionType)\n{\n    var actionArray = getActionArray(device, 'scalar', actionType);\n    if (actionArray.length > 0)\n    {\n        for (var ii = 0; ii < actionArray.length; ++ii)\n        {\n            actionArray[ii].alarm.value = 0;\n            if (!isNaN(actionArray[ii].value))\n            {\n                if (actionArray[ii].value < actionArray[ii].alarm.limits.low)  actionArray[ii].alarm.value = 1;\n                if (actionArray[ii].value < actionArray[ii].alarm.limits.lolo) actionArray[ii].alarm.value = 3;\n                if (actionArray[ii].value > actionArray[ii].alarm.limits.high) actionArray[ii].alarm.value = 2;\n                if (actionArray[ii].value > actionArray[ii].alarm.limits.hihi) actionArray[ii].alarm.value = 4;\n            }\n        }\n    }\n}\n",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 780,
-        "y": 300,
-        "wires": [
-            [
-                "a3ff8e5.b79de7",
-                "93049b70.2dc5c8"
-            ]
-        ]
-    },
-    {
-        "id": "fb6723bd.68db",
-        "type": "exec",
-        "z": "5f562f66.a301e",
-        "command": "hcitool rssi ",
-        "addpay": true,
-        "append": "",
-        "useSpawn": "false",
-        "timer": "",
-        "oldrc": false,
-        "name": "",
-        "x": 710,
-        "y": 940,
-        "wires": [
-            [
-                "660483c4.ff812c"
-            ],
-            [],
-            []
-        ]
-    },
-    {
-        "id": "7fdb0a6e.d56b14",
-        "type": "delay",
-        "z": "5f562f66.a301e",
-        "name": "",
-        "pauseType": "delay",
-        "timeout": "1",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "1",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": false,
-        "x": 280,
-        "y": 940,
-        "wires": [
-            [
-                "ea1c6a21.76e578"
-            ]
-        ]
-    },
-    {
-        "id": "c3394354.07534",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Save BT Enviromental Variables",
-        "func": "flow.set(msg.topic,msg.payload);\nflow.set('bt0RSSI',-100);\nreturn null;",
-        "outputs": 0,
-        "noerr": 0,
-        "x": 410,
-        "y": 680,
-        "wires": []
-    },
-    {
-        "id": "559a006e.3ff4d",
-        "type": "inject",
-        "z": "5f562f66.a301e",
-        "name": "BT0MACADDR",
-        "topic": "BT0MACADDR",
-        "payload": "BT0MACADDR",
-        "payloadType": "env",
-        "repeat": "",
-        "crontab": "",
-        "once": true,
-        "onceDelay": 0.1,
-        "x": 120,
-        "y": 680,
-        "wires": [
-            [
-                "c3394354.07534"
-            ]
-        ]
-    },
-    {
-        "id": "ea1c6a21.76e578",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Retrieve BT0 MAC Addr",
-        "func": "msg.payload = flow.get('BT0MACADDR');\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 480,
-        "y": 940,
-        "wires": [
-            [
-                "fb6723bd.68db"
-            ]
-        ]
-    },
-    {
-        "id": "660483c4.ff812c",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Get BT0 RSSI",
-        "func": "var btRSSI = -100;\nif (msg.payload.indexOf('RSSI return value: ') >= 0)\nbtRSSI = Number(msg.payload.substring(18));\nflow.set('bt0RSSI',btRSSI);\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 900,
-        "y": 920,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "54125822.397b88",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Save MQTTPUBLISHTOPIC Enviromental Variable",
-        "func": "var mqttArray = msg.payload.split('/');\nvar restfulDevice = \n{\n    project     : mqttArray[0],\n    deviceType  : mqttArray[1],\n    name        : mqttArray[2],\n};\nflow.set('restfulDevice', restfulDevice);\n\nreturn null;",
-        "outputs": 0,
-        "noerr": 0,
-        "x": 470,
-        "y": 740,
-        "wires": []
-    },
-    {
-        "id": "5e43c462.bee36c",
-        "type": "inject",
-        "z": "5f562f66.a301e",
-        "name": "MQTTPUBLISHTOPIC",
-        "topic": "MQTTPUBLISHTOPIC",
-        "payload": "MQTTPUBLISHTOPIC",
-        "payloadType": "env",
-        "repeat": "",
-        "crontab": "",
-        "once": true,
-        "onceDelay": 0.1,
-        "x": 150,
-        "y": 740,
-        "wires": [
-            [
-                "54125822.397b88"
-            ]
-        ]
-    },
-    {
-        "id": "b9f5e995.cef698",
-        "type": "inject",
-        "z": "5f562f66.a301e",
-        "name": "settingsPassword",
-        "topic": "settingsPassword",
-        "payload": "SETTINGSPASSWORD",
-        "payloadType": "env",
-        "repeat": "",
-        "crontab": "",
-        "once": true,
-        "onceDelay": 0.1,
-        "x": 130,
-        "y": 800,
-        "wires": [
-            [
-                "c91d065d.8d93a8"
-            ]
-        ]
-    },
-    {
-        "id": "c91d065d.8d93a8",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Save Settings Password",
-        "func": "global.set(msg.topic,msg.payload);\nreturn msg;",
-        "outputs": 0,
-        "noerr": 0,
-        "x": 390,
-        "y": 800,
-        "wires": []
-    },
-    {
-        "id": "6c15c07a.68169",
-        "type": "link in",
-        "z": "5f562f66.a301e",
-        "name": "Settings In",
-        "links": [
-            "e6344b27.343f98"
-        ],
-        "x": 35,
-        "y": 100,
-        "wires": [
-            [
-                "8fd42733.128c98"
-            ]
-        ]
-    },
-    {
-        "id": "a3ff8e5.b79de7",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Split MQTT topic",
-        "func": "var mqttArray = msg.topic.split('/');\nvar device = \n{\n    project     : mqttArray[0],\n    deviceType  : mqttArray[1],\n    name        : mqttArray[2],\n    prop        : mqttArray[3],\n};\nreturn {topic : msg.topic, payload:{topic:'readings', mqttDevice : device, payload:msg.payload}};",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 890,
-        "y": 360,
-        "wires": [
-            [
-                "107beeed.934ed1"
-            ]
-        ]
-    },
-    {
-        "id": "107beeed.934ed1",
-        "type": "websocket out",
-        "z": "5f562f66.a301e",
-        "name": "/websocket",
-        "server": "44b51478.9c022c",
-        "client": "",
-        "x": 1110,
-        "y": 360,
-        "wires": []
-    },
-    {
-        "id": "65c2a6ff.a7b8f8",
-        "type": "link in",
-        "z": "5f562f66.a301e",
-        "name": "To ultra-n-cab websocket",
-        "links": [
-            "756367ed.b63478"
-        ],
-        "x": 975,
-        "y": 400,
-        "wires": [
-            [
-                "107beeed.934ed1"
-            ]
-        ]
-    },
-    {
-        "id": "e6344b27.343f98",
-        "type": "link out",
-        "z": "5f562f66.a301e",
-        "name": "Settings Out",
-        "links": [
-            "6c15c07a.68169"
-        ],
-        "x": 1235,
-        "y": 1040,
-        "wires": []
-    },
-    {
-        "id": "756367ed.b63478",
-        "type": "link out",
-        "z": "5f562f66.a301e",
-        "name": "Token Check",
-        "links": [
-            "65c2a6ff.a7b8f8"
-        ],
-        "x": 1235,
-        "y": 1080,
-        "wires": []
-    },
-    {
-        "id": "cbd524b1.38ae68",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Send Token",
-        "func": "return {topic:'getJwtToken', payload:{topic:'getJwtToken', userID:msg.userID, token: msg.token}};\n",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 1050,
-        "y": 1120,
-        "wires": [
-            [
-                "756367ed.b63478"
-            ]
-        ]
-    },
-    {
-        "id": "48d8ffed.94eeb",
-        "type": "JsonWebToken",
-        "z": "5f562f66.a301e",
-        "name": "get Token",
-        "tokenconfig": "144aea5f.fcbd96",
-        "x": 900,
-        "y": 1120,
-        "wires": [
-            [
-                "cbd524b1.38ae68"
-            ]
-        ]
-    },
-    {
-        "id": "3779d569.b1256a",
-        "type": "JsonWebToken",
-        "z": "5f562f66.a301e",
-        "name": "decrypt Token",
-        "tokenconfig": "144aea5f.fcbd96",
-        "x": 940,
-        "y": 1040,
-        "wires": [
-            [
-                "95ced5d5.49b238"
-            ]
-        ]
-    },
-    {
-        "id": "95ced5d5.49b238",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Check Token",
-        "func": "if (Number(msg.token) == msg.userID)\n{\n    return [msg, {topic : 'acknowledge', payload:{topic:'settingAcknowledge', payload: 'Success!', userID : msg.userID}}]\n}\nreturn [null, {topic : 'acknowledge', payload:{topic:'settingAcknowledge', payload: 'Bad token', userID : msg.userID}}];",
-        "outputs": 2,
-        "noerr": 0,
-        "x": 1110,
-        "y": 1040,
-        "wires": [
-            [
-                "e6344b27.343f98"
-            ],
-            [
-                "756367ed.b63478"
-            ]
-        ]
-    },
-    {
-        "id": "d53fb4ef.3c8a98",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "sendSettingToMqtt",
-        "func": "return {\n    topic   : msg.payload.mqttMessage.topic, \n    payload : msg.payload.mqttMessage.payload, \n    token   : msg.payload.token, \n    userID  : msg.payload.userID };\n",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 750,
-        "y": 1040,
-        "wires": [
-            [
-                "3779d569.b1256a"
-            ]
-        ]
-    },
-    {
-        "id": "a1128fc4.268ad",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "CheckLogin",
-        "func": "if (global.get('settingsPassword') == 'NULL')\n{\n    return [null, {topic:'getJwtToken',payload:msg.payload.userID, userID : msg.payload.userID}];    \n}\nif (msg.payload.payload.loginPassword != global.get('settingsPassword'))\n{\n    return [{topic:'getJwtToken', payload:{topic:'getJwtToken', userID:msg.payload.userID, token: null}}, null];\n}\nreturn [null, {topic:'getJwtToken',payload:msg.payload.userID, userID : msg.payload.userID}];",
-        "outputs": 2,
-        "noerr": 0,
-        "x": 730,
-        "y": 1100,
-        "wires": [
-            [
-                "756367ed.b63478"
-            ],
-            [
-                "48d8ffed.94eeb"
-            ]
-        ]
-    },
-    {
-        "id": "8f5a7ff7.5fa34",
-        "type": "switch",
-        "z": "5f562f66.a301e",
-        "name": "",
-        "property": "payload.topic",
-        "propertyType": "msg",
-        "rules": [
-            {
-                "t": "eq",
-                "v": "sendSettingToMqtt",
-                "vt": "str"
-            },
-            {
-                "t": "eq",
-                "v": "getJwtToken",
-                "vt": "str"
-            }
-        ],
-        "checkall": "true",
-        "repair": false,
-        "outputs": 2,
-        "x": 570,
-        "y": 1040,
-        "wires": [
-            [
-                "d53fb4ef.3c8a98"
-            ],
-            [
-                "a1128fc4.268ad"
-            ]
-        ]
-    },
-    {
-        "id": "3161d43f.21043c",
-        "type": "json",
-        "z": "5f562f66.a301e",
-        "name": "",
-        "property": "payload",
-        "action": "",
-        "pretty": false,
-        "x": 450,
-        "y": 1040,
-        "wires": [
-            [
-                "8f5a7ff7.5fa34"
-            ]
-        ]
-    },
-    {
-        "id": "306c64be.a3ab1c",
-        "type": "websocket in",
-        "z": "5f562f66.a301e",
-        "name": "",
-        "server": "44b51478.9c022c",
-        "client": "",
-        "x": 300,
-        "y": 1040,
-        "wires": [
-            [
-                "3161d43f.21043c"
-            ]
-        ]
-    },
-    {
         "id": "3ab766b1.558d9a",
         "type": "template",
         "z": "f07e020c.d4d43",
@@ -963,7 +272,7 @@
         "fieldType": "msg",
         "format": "html",
         "syntax": "mustache",
-        "template": "<!-- navBar -->\n    <div class=\"jumbotron\" width=\"100%\">\n        <table width=\"100%\">\n            <tr>\n                <td style=\"text-align:left; vertical-align:middle;\" width=\"20%\">\n                    <a href='/'><img src=\"/img/home.png\" height=\"75px\"/></a>\n                </td>\n                <td width=\"60%\" style=\"text-align:center; vertical-align:middle;\">\n                    <h1 class=\"jumbotron-title big-text bold-text\">{{{payload.title}}}</h1>\n                </td>\n                <td style=\"text-align:right; vertical-align:middle;\"  width=\"20%\">\n                    <a href='https://www.blinky-lite.io/' target='_blank'>\n                        <img src=\"/img/BlinkyLogo.gif\" height=\"75px\"/>\n                    </a>                \n                </td>\n            </tr>\n        </table>\n    </div>\n",
+        "template": "<!-- navBar -->\n    <div class=\"jumbotron\" width=\"100%\">\n        <table width=\"100%\">\n            <tr>\n                <td style=\"text-align:left; vertical-align:middle;\"  width=\"20%\">\n                    <a href='https://www.blinky-lite.io/' target='_blank'>\n                        <img src=\"/img/BlinkyLogo.gif\" height=\"75px\"/>\n                    </a>                \n                </td>\n                <td width=\"60%\" style=\"text-align:center; vertical-align:middle;\">\n                    <h1 class=\"jumbotron-title big-text bold-text\">\n                        <img src=\"/img/{{{payload.navBarIcon}}}\" height=\"75px\" style=\"padding-right:20px;\"/><span>{{{payload.title}}}</span>\n                    </h1>\n                </td>\n                <td style=\"text-align:right; vertical-align:middle;\" width=\"20%\">\n                    <a href='/'><img src=\"/img/home.png\" height=\"75px\"/></a>\n                </td>\n            </tr>\n        </table>\n    </div>\n",
         "output": "str",
         "x": 200,
         "y": 80,
@@ -1144,42 +453,749 @@
         ]
     },
     {
-        "id": "ceaca47f.6a1748",
+        "id": "3db92dce.42f022",
+        "type": "inject",
+        "z": "662f1a84.4a0024",
+        "name": "PROJECT",
+        "topic": "project",
+        "payload": "PROJECT",
+        "payloadType": "env",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "x": 130,
+        "y": 40,
+        "wires": [
+            [
+                "f3ba9d87.b0b3"
+            ]
+        ]
+    },
+    {
+        "id": "dd19ead.8136a18",
+        "type": "inject",
+        "z": "662f1a84.4a0024",
+        "name": "SETTINGSPASSWORD",
+        "topic": "settingsPassword",
+        "payload": "SETTINGSPASSWORD",
+        "payloadType": "env",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "x": 170,
+        "y": 100,
+        "wires": [
+            [
+                "f3ba9d87.b0b3"
+            ]
+        ]
+    },
+    {
+        "id": "f3ba9d87.b0b3",
+        "type": "function",
+        "z": "662f1a84.4a0024",
+        "name": "Save global init",
+        "func": "global.set(msg.topic,msg.payload);\nreturn msg;",
+        "outputs": 0,
+        "noerr": 0,
+        "x": 400,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "3fdd5fc.2955da",
+        "type": "exec",
+        "z": "662f1a84.4a0024",
+        "command": "iwconfig",
+        "addpay": false,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "",
+        "x": 300,
+        "y": 180,
+        "wires": [
+            [
+                "663c4f39.5d8f3"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "f9a00213.d4c49",
+        "type": "inject",
+        "z": "662f1a84.4a0024",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "5",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "x": 140,
+        "y": 180,
+        "wires": [
+            [
+                "3fdd5fc.2955da"
+            ]
+        ]
+    },
+    {
+        "id": "663c4f39.5d8f3",
+        "type": "function",
+        "z": "662f1a84.4a0024",
+        "name": "Get Signal Quality",
+        "func": "var info = msg.payload;\nvar linkStartIndex  = info.indexOf('Link Quality=');\nvar levelStartIndex = info.indexOf('Signal level=');\nvar linkStopIndex   = info.indexOf('/70');\nvar levelStopIndex   = info.lastIndexOf('dBm');\nvar linkQuality = Number(info.substring(linkStartIndex + 13, linkStopIndex));\nvar signalLevel =  Number(info.substring(levelStartIndex + 13, levelStopIndex - 1));\nvar ssid = info.substring(info.indexOf('ESSID') + 7);\nssid = ssid.substring(0,ssid.indexOf('\"'));\nvar val = {linkQuality : linkQuality, signalLevel: signalLevel, ssid:ssid};\nglobal.set('linkQuality',linkQuality);\nglobal.set('signalLevel', signalLevel);\nglobal.set('ssid', ssid);\nreturn {topic :'test',payload : val};",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 480,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cee77742.429528",
+        "type": "json",
+        "z": "ac85ba6c.c4f548",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 310,
+        "y": 140,
+        "wires": [
+            [
+                "d278d9eb.5e5258"
+            ]
+        ]
+    },
+    {
+        "id": "7fa01a3c.062c04",
+        "type": "file",
+        "z": "ac85ba6c.c4f548",
+        "name": "Init Settings",
+        "filename": "",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 1090,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6df09fba.01645",
+        "type": "function",
+        "z": "ac85ba6c.c4f548",
+        "name": "CreateSettings",
+        "func": "var device = flow.get('device');\n//node.warn('newSetting = ' + flow.get('newSetting').toString())\n\nvar bufsize = 8;\nvar buffer = new ArrayBuffer(bufsize);\nvar settingsView = new DataView(buffer);\nsettingsView.setInt32(0, flow.get('newSetting'), true);\nsettingsView.setFloat32(4, device.nsamples.value, true);\n\nreturn {topic:'settings',payload:Buffer.from(buffer)};\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 580,
+        "y": 460,
+        "wires": [
+            [
+                "fa5221ad.33bf6"
+            ]
+        ]
+    },
+    {
+        "id": "bee77f59.b1005",
+        "type": "inject",
+        "z": "ac85ba6c.c4f548",
+        "name": "init 1 sec",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "x": 140,
+        "y": 340,
+        "wires": [
+            [
+                "d16a7d4b.5467d"
+            ]
+        ]
+    },
+    {
+        "id": "c11d6e24.54b15",
+        "type": "file in",
+        "z": "ac85ba6c.c4f548",
+        "name": "Init Settings",
+        "filename": "",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "x": 470,
+        "y": 340,
+        "wires": [
+            [
+                "8480bbf7.70a9c8"
+            ]
+        ]
+    },
+    {
+        "id": "8480bbf7.70a9c8",
+        "type": "json",
+        "z": "ac85ba6c.c4f548",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 670,
+        "y": 340,
+        "wires": [
+            [
+                "d05e1d2b.b776"
+            ]
+        ]
+    },
+    {
+        "id": "d05e1d2b.b776",
+        "type": "function",
+        "z": "ac85ba6c.c4f548",
+        "name": "Save initSettings in Memory",
+        "func": "flow.set('device', msg.payload);\nflow.set('newSetting', 1);\nreturn null;",
+        "outputs": 0,
+        "noerr": 0,
+        "x": 900,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "a921d1fc.55992",
+        "type": "function",
+        "z": "ac85ba6c.c4f548",
+        "name": "Read Serial Handshake",
+        "func": "var ib;\nvar device = flow.get('device');\nvar dataView     = new DataView(new ArrayBuffer(4));\nvar newSettingDone = 0;\nvar cubeInit = 0;\n\nfor (ib = 0; ib < 4; ++ib)   dataView.setUint8(ib, msg.payload[0 * 4 + 3 - ib]);\ncubeInit = dataView.getInt32(0);\nfor (ib = 0; ib < 4; ++ib)   dataView.setUint8(ib, msg.payload[1 * 4 + 3 - ib]);\nnewSettingDone = dataView.getInt32(0);\n\nvar newMsg = {topic:'userData', payload:[]};\nfor (var ii = 8; ii < msg.payload.length; ++ii) newMsg.payload[ii - 8] = msg.payload[ii];\n\nif (newSettingDone > 0) \n{\n    flow.set('newSetting', 0);\n}\nif(cubeInit == 1) flow.set('newSetting', 1);\n//node.warn('newSettingDone = ' + newSettingDone.toString());\n//node.warn('cubeInit = ' + cubeInit.toString());\n\nreturn newMsg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 330,
+        "y": 400,
+        "wires": [
+            [
+                "c114c3ef.aeea3",
+                "6df09fba.01645"
+            ]
+        ]
+    },
+    {
+        "id": "48b32c64.510514",
+        "type": "function",
+        "z": "ac85ba6c.c4f548",
+        "name": "Make Pretty",
+        "func": "var jsonPretty = JSON.stringify(msg.payload,null,2);\nvar filename = flow.get('cubeInfo').deviceType + '-' + flow.get('cubeInfo').name + '.json';\nreturn {topic: msg.payload, payload:jsonPretty, 'filename':filename};",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 910,
+        "y": 140,
+        "wires": [
+            [
+                "7fa01a3c.062c04"
+            ]
+        ]
+    },
+    {
+        "id": "4a463958.5f21e8",
+        "type": "function",
+        "z": "ac85ba6c.c4f548",
+        "name": "Settings Alarm Scan",
+        "func": "scalarAlarmScan(msg.payload, 'setting');\nflow.set('device', msg.payload); \nflow.set('newSetting', 1); \nreturn msg;\n\nfunction getActionArray(device, type, actionType)\n{\n    var actionArray = [];\n    var keys = Object.keys(device);\n    for (var ii = 0; ii < keys.length; ++ii)\n    {\n        if (device[keys[ii]].hasOwnProperty('type'))\n        {\n            if (device[keys[ii]].type == type)\n            {\n                if (device[keys[ii]].action == actionType)\n                {\n                    actionArray.push(device[keys[ii]]);\n                }\n            }\n        }\n    }\n    return actionArray;\n}\nfunction scalarAlarmScan(device, actionType)\n{\n    var actionArray = getActionArray(device, 'scalar', actionType);\n    if (actionArray.length > 0)\n    {\n        for (var ii = 0; ii < actionArray.length; ++ii)\n        {\n            actionArray[ii].alarm.value = 0;\n            if (!isNaN(actionArray[ii].value))\n            {\n                if (actionArray[ii].value < actionArray[ii].alarm.limits.low)  actionArray[ii].alarm.value = 1;\n                if (actionArray[ii].value < actionArray[ii].alarm.limits.lolo) actionArray[ii].alarm.value = 3;\n                if (actionArray[ii].value > actionArray[ii].alarm.limits.high) actionArray[ii].alarm.value = 2;\n                if (actionArray[ii].value > actionArray[ii].alarm.limits.hihi) actionArray[ii].alarm.value = 4;\n            }\n        }\n    }\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 720,
+        "y": 140,
+        "wires": [
+            [
+                "48b32c64.510514"
+            ]
+        ]
+    },
+    {
+        "id": "258e6c4f.d161b4",
+        "type": "function",
+        "z": "ac85ba6c.c4f548",
+        "name": "Readings Alarm Scan",
+        "func": "msg.payload.linkQuality.value     = global.get('linkQuality');\nmsg.payload.signalLevel.value     = global.get('signalLevel');\nscalarAlarmScan(msg.payload, 'reading');\nflow.set('device', msg.payload); \nmsg.topic = global.get('project') + '/' + flow.get('cubeInfo').deviceType + '/' + flow.get('cubeInfo').name + '/reading';\nreturn msg;\n\nfunction getActionArray(device, type, actionType)\n{\n    var actionArray = [];\n    var keys = Object.keys(device);\n    for (var ii = 0; ii < keys.length; ++ii)\n    {\n        if (device[keys[ii]].hasOwnProperty('type'))\n        {\n            if (device[keys[ii]].type == type)\n            {\n                if (device[keys[ii]].action == actionType)\n                {\n                    actionArray.push(device[keys[ii]]);\n                }\n            }\n        }\n    }\n    return actionArray;\n}\nfunction scalarAlarmScan(device, actionType)\n{\n    var actionArray = getActionArray(device, 'scalar', actionType);\n    if (actionArray.length > 0)\n    {\n        for (var ii = 0; ii < actionArray.length; ++ii)\n        {\n            actionArray[ii].alarm.value = 0;\n            if (!isNaN(actionArray[ii].value))\n            {\n                if (actionArray[ii].value < actionArray[ii].alarm.limits.low)  actionArray[ii].alarm.value = 1;\n                if (actionArray[ii].value < actionArray[ii].alarm.limits.lolo) actionArray[ii].alarm.value = 3;\n                if (actionArray[ii].value > actionArray[ii].alarm.limits.high) actionArray[ii].alarm.value = 2;\n                if (actionArray[ii].value > actionArray[ii].alarm.limits.hihi) actionArray[ii].alarm.value = 4;\n            }\n        }\n    }\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 820,
+        "y": 400,
+        "wires": [
+            [
+                "53b25e79.a0c6b",
+                "5e26b050.53e11"
+            ]
+        ]
+    },
+    {
+        "id": "53b25e79.a0c6b",
+        "type": "function",
+        "z": "ac85ba6c.c4f548",
+        "name": "Split MQTT topic",
+        "func": "var mqttArray = msg.topic.split('/');\nvar device = \n{\n    project     : mqttArray[0],\n    deviceType  : mqttArray[1],\n    name        : mqttArray[2],\n    prop        : mqttArray[3],\n};\nreturn {topic : msg.topic, payload:{topic:'readings', mqttDevice : device, payload:msg.payload}};",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1050,
+        "y": 460,
+        "wires": [
+            [
+                "dd844957.92fc88"
+            ]
+        ]
+    },
+    {
+        "id": "dd844957.92fc88",
+        "type": "websocket out",
+        "z": "ac85ba6c.c4f548",
+        "name": "/app/websocket",
+        "server": "44b51478.9c022c",
+        "client": "",
+        "x": 1260,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "10ab653e.29bf0b",
+        "type": "exec",
+        "z": "ac85ba6c.c4f548",
+        "command": "pm2 restart red",
+        "addpay": false,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "",
+        "x": 1040,
+        "y": 260,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "70016d7a.ec4d94",
+        "type": "mqtt in",
+        "z": "ac85ba6c.c4f548",
+        "name": "Restart Tray",
+        "topic": "+/+/+/restartTray",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "79250bf3.365cc4",
+        "x": 130,
+        "y": 260,
+        "wires": [
+            [
+                "21ca8483.9fae8c"
+            ]
+        ]
+    },
+    {
+        "id": "21ca8483.9fae8c",
+        "type": "json",
+        "z": "ac85ba6c.c4f548",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 270,
+        "y": 260,
+        "wires": [
+            [
+                "f1c5f5e5.bcdbf8"
+            ]
+        ]
+    },
+    {
+        "id": "b512cfc9.fd0ae",
+        "type": "function",
+        "z": "ac85ba6c.c4f548",
+        "name": "Check Restart Setting",
+        "func": "if (msg.payload != 1) return null\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 800,
+        "y": 260,
+        "wires": [
+            [
+                "10ab653e.29bf0b"
+            ]
+        ]
+    },
+    {
+        "id": "83b1e82f.502058",
+        "type": "function",
+        "z": "ac85ba6c.c4f548",
+        "name": "Filter Websocket MQTT like message",
+        "func": "var msg1 = null;\nvar msg2 = null\nvar mqttArray = msg.topic.split('/');\nif (mqttArray[3] == 'restartTray')\n{\n    msg2 = msg;\n}\nelse\n{\n    msg1 = msg;\n}\n\nreturn [msg1,msg2];",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 270,
+        "y": 200,
+        "wires": [
+            [
+                "d278d9eb.5e5258"
+            ],
+            [
+                "f1c5f5e5.bcdbf8"
+            ]
+        ]
+    },
+    {
+        "id": "c114c3ef.aeea3",
+        "type": "function",
+        "z": "ac85ba6c.c4f548",
+        "name": "Create Readings",
+        "func": "var ib;\nvar device = flow.get('device');\nvar dataView     = new DataView(new ArrayBuffer(4));\n\nfor (ib = 0; ib < 4; ++ib)   dataView.setUint8(ib, msg.payload[0 * 4 + 3 - ib]);\ndevice.interval.value = dataView.getInt32(0);\nfor (ib = 0; ib < 4; ++ib)   dataView.setUint8(ib, msg.payload[1 * 4 + 3 - ib]);\ndevice.avgInterval.value = Math.round(dataView.getFloat32(0));\nfor (ib = 0; ib < 4; ++ib)   dataView.setUint8(ib, msg.payload[2 * 4 + 3 - ib]);\ndevice.cpm.value = Math.round(10.0 * dataView.getFloat32(0)) /10.0;\n\nreturn {topic : 'reading', payload : device};\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 590,
+        "y": 400,
+        "wires": [
+            [
+                "258e6c4f.d161b4"
+            ]
+        ]
+    },
+    {
+        "id": "a7c7598.0f837a8",
+        "type": "comment",
+        "z": "ac85ba6c.c4f548",
+        "name": "Customization",
+        "info": " - Buffer size on Teensy Output\n - rfcomm port\n - code in Create Readings\n - code in Create Settings\n - websocket URL",
+        "x": 670,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "82727cde.2376e",
+        "type": "inject",
+        "z": "ac85ba6c.c4f548",
+        "name": "Init",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "x": 130,
+        "y": 40,
+        "wires": [
+            [
+                "f68ad2fd.12b45"
+            ]
+        ]
+    },
+    {
+        "id": "f68ad2fd.12b45",
+        "type": "function",
+        "z": "ac85ba6c.c4f548",
+        "name": "Cube Custom Info",
+        "func": "var cubeInfo = \n{\n    deviceType  : 'cosmic-interval',\n    name        : '01',\n};\nflow.set('cubeInfo', cubeInfo);\nreturn null;",
+        "outputs": 0,
+        "noerr": 0,
+        "x": 410,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "d16a7d4b.5467d",
+        "type": "function",
+        "z": "ac85ba6c.c4f548",
+        "name": "Make Pretty",
+        "func": "var filename = flow.get('cubeInfo').deviceType + '-' + flow.get('cubeInfo').name + '.json';\nreturn {topic: 'readFile', 'filename':filename};",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 310,
+        "y": 340,
+        "wires": [
+            [
+                "c11d6e24.54b15"
+            ]
+        ]
+    },
+    {
+        "id": "d278d9eb.5e5258",
+        "type": "function",
+        "z": "ac85ba6c.c4f548",
+        "name": "Filter MQTT",
+        "func": "var mqttArray = msg.topic.split('/');\nif (mqttArray[0] != global.get('project')) return null;\nif (mqttArray[1] != flow.get('cubeInfo').deviceType) return null;\nif (mqttArray[2] != flow.get('cubeInfo').name) return null;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 510,
+        "y": 140,
+        "wires": [
+            [
+                "4a463958.5f21e8"
+            ]
+        ]
+    },
+    {
+        "id": "f1c5f5e5.bcdbf8",
+        "type": "function",
+        "z": "ac85ba6c.c4f548",
+        "name": "Filter MQTT",
+        "func": "var mqttArray = msg.topic.split('/');\nif (mqttArray[0] != global.get('project')) return null;\nif (mqttArray[1] != flow.get('cubeInfo').deviceType) return null;\nif (mqttArray[2] != flow.get('cubeInfo').name) return null;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 510,
+        "y": 260,
+        "wires": [
+            [
+                "b512cfc9.fd0ae"
+            ]
+        ]
+    },
+    {
+        "id": "fa5221ad.33bf6",
+        "type": "serial out",
+        "z": "ac85ba6c.c4f548",
+        "name": "",
+        "serial": "21ff842d.62f36c",
+        "x": 780,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "1376070e.8495e9",
+        "type": "serial in",
+        "z": "ac85ba6c.c4f548",
+        "name": "",
+        "serial": "21ff842d.62f36c",
+        "x": 130,
+        "y": 400,
+        "wires": [
+            [
+                "a921d1fc.55992"
+            ]
+        ]
+    },
+    {
+        "id": "32712281.6464ae",
+        "type": "mqtt in",
+        "z": "ac85ba6c.c4f548",
+        "name": "Subscribe Settings",
+        "topic": "+/+/+/setting",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "79250bf3.365cc4",
+        "x": 150,
+        "y": 140,
+        "wires": [
+            [
+                "cee77742.429528"
+            ]
+        ]
+    },
+    {
+        "id": "5e26b050.53e11",
+        "type": "mqtt out",
+        "z": "ac85ba6c.c4f548",
+        "name": "Publish Readings",
+        "topic": "",
+        "qos": "0",
+        "retain": "false",
+        "broker": "79250bf3.365cc4",
+        "x": 1050,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "4d9ebbe5.1c2b44",
+        "type": "function",
+        "z": "5d5fc264.fc823c",
+        "name": "Send Token",
+        "func": "return {topic:'getJwtToken', payload:{topic:'getJwtToken', userID:msg.userID, token: msg.token}};\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 890,
+        "y": 160,
+        "wires": [
+            [
+                "5fe17245.3ca2ec"
+            ]
+        ]
+    },
+    {
+        "id": "6a0cfb70.6cb584",
+        "type": "JsonWebToken",
+        "z": "5d5fc264.fc823c",
+        "name": "get Token",
+        "tokenconfig": "144aea5f.fcbd96",
+        "x": 740,
+        "y": 160,
+        "wires": [
+            [
+                "4d9ebbe5.1c2b44"
+            ]
+        ]
+    },
+    {
+        "id": "1c9d5e77.017cf2",
+        "type": "JsonWebToken",
+        "z": "5d5fc264.fc823c",
+        "name": "decrypt Token",
+        "tokenconfig": "144aea5f.fcbd96",
+        "x": 780,
+        "y": 80,
+        "wires": [
+            [
+                "4bd98c7b.444ac4"
+            ]
+        ]
+    },
+    {
+        "id": "4bd98c7b.444ac4",
+        "type": "function",
+        "z": "5d5fc264.fc823c",
+        "name": "Check Token",
+        "func": "if (Number(msg.token) == msg.userID)\n{\n    return [msg, {topic : 'acknowledge', payload:{topic:'settingAcknowledge', payload: 'Success!', userID : msg.userID}}]\n}\nreturn [null, {topic : 'acknowledge', payload:{topic:'settingAcknowledge', payload: 'Bad token', userID : msg.userID}}];",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 950,
+        "y": 80,
+        "wires": [
+            [
+                "45e901e9.5924d"
+            ],
+            [
+                "5fe17245.3ca2ec"
+            ]
+        ]
+    },
+    {
+        "id": "4f227831.7de098",
+        "type": "function",
+        "z": "5d5fc264.fc823c",
+        "name": "sendSettingToMqtt",
+        "func": "return {\n    topic   : msg.payload.mqttMessage.topic, \n    payload : msg.payload.mqttMessage.payload, \n    token   : msg.payload.token, \n    userID  : msg.payload.userID };\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 590,
+        "y": 80,
+        "wires": [
+            [
+                "1c9d5e77.017cf2"
+            ]
+        ]
+    },
+    {
+        "id": "c829a399.dc81d",
+        "type": "function",
+        "z": "5d5fc264.fc823c",
+        "name": "CheckLogin",
+        "func": "if (global.get('settingsPassword') == 'NULL')\n{\n    return [null, {topic:'getJwtToken',payload:msg.payload.userID, userID : msg.payload.userID}];    \n}\nif (msg.payload.payload.loginPassword != global.get('settingsPassword'))\n{\n    return [{topic:'getJwtToken', payload:{topic:'getJwtToken', userID:msg.payload.userID, token: null}}, null];\n}\nreturn [null, {topic:'getJwtToken',payload:msg.payload.userID, userID : msg.payload.userID}];",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 570,
+        "y": 140,
+        "wires": [
+            [
+                "5fe17245.3ca2ec"
+            ],
+            [
+                "6a0cfb70.6cb584"
+            ]
+        ]
+    },
+    {
+        "id": "7cbe3ff7.ee919",
+        "type": "switch",
+        "z": "5d5fc264.fc823c",
+        "name": "",
+        "property": "payload.topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "sendSettingToMqtt",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "getJwtToken",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 410,
+        "y": 80,
+        "wires": [
+            [
+                "4f227831.7de098"
+            ],
+            [
+                "c829a399.dc81d"
+            ]
+        ]
+    },
+    {
+        "id": "3c897d11.00ecd2",
+        "type": "json",
+        "z": "5d5fc264.fc823c",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 290,
+        "y": 80,
+        "wires": [
+            [
+                "7cbe3ff7.ee919"
+            ]
+        ]
+    },
+    {
+        "id": "f188ad63.8e167",
+        "type": "websocket in",
+        "z": "5d5fc264.fc823c",
+        "name": "/app/websocket",
+        "server": "44b51478.9c022c",
+        "client": "",
+        "x": 140,
+        "y": 80,
+        "wires": [
+            [
+                "3c897d11.00ecd2"
+            ]
+        ]
+    },
+    {
+        "id": "defd6428.1aa868",
         "type": "http in",
-        "z": "5f562f66.a301e",
-        "name": "/",
-        "url": "/",
+        "z": "5d5fc264.fc823c",
+        "name": "/app",
+        "url": "/app",
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
         "x": 110,
-        "y": 1180,
+        "y": 220,
         "wires": [
             [
-                "2a62d40e.6d364c"
+                "91225404.2fb3e8"
             ]
         ]
     },
     {
-        "id": "2a62d40e.6d364c",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Set Name And Device Type",
-        "func": "msg.payload['script'] = {};\nmsg.payload['script']['name'] = flow.get('restfulDevice').name;\nmsg.payload['script']['deviceType'] = flow.get('restfulDevice').deviceType;\nmsg.payload['script']['project'] = flow.get('restfulDevice').project;\nreturn msg;\n",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 320,
-        "y": 1180,
-        "wires": [
-            [
-                "f946f23b.18995"
-            ]
-        ]
-    },
-    {
-        "id": "f946f23b.18995",
+        "id": "789e5a52.c4f944",
         "type": "template",
-        "z": "5f562f66.a301e",
+        "z": "5d5fc264.fc823c",
         "name": "Set Title",
         "field": "payload.title",
         "fieldType": "msg",
@@ -1187,27 +1203,27 @@
         "syntax": "mustache",
         "template": "Cosmic Interval {{{payload.script.name}}}",
         "output": "str",
-        "x": 520,
-        "y": 1180,
+        "x": 260,
+        "y": 260,
         "wires": [
             [
-                "1fdd4371.d3d94d"
+                "2f8acedc.6cd972"
             ]
         ]
     },
     {
-        "id": "3bf18bd2.6f9704",
+        "id": "bd77c095.6b011",
         "type": "subflow:6a402d92.12d7c4",
-        "z": "5f562f66.a301e",
+        "z": "5d5fc264.fc823c",
         "name": "",
         "x": 1150,
-        "y": 1420,
+        "y": 460,
         "wires": []
     },
     {
-        "id": "1fdd4371.d3d94d",
+        "id": "8b2cb09d.ff645",
         "type": "template",
-        "z": "5f562f66.a301e",
+        "z": "5d5fc264.fc823c",
         "name": "script.stripChartWidget",
         "field": "payload.script.stripChartWidget",
         "fieldType": "msg",
@@ -1216,55 +1232,55 @@
         "template": "// StripChart Widget\n        class StripChart\n        {\n           constructor(plotConfig) \n            {\n                this.plotConfig = plotConfig;\n                this.plotStartTime = new Date().getTime();\n                this.layout =\n                {\n                    showlegend  : true,\n                    legend      : { x: 0, y: 1.15},\n                    height      : plotConfig.height,\n                    width       : plotConfig.width,\n                    xaxis       :\n                    {\n                        title: 'Seconds since ' + new Date(this.plotStartTime).toLocaleString(),\n                    },\n                    yaxis:\n                    {\n                        title           : plotConfig.trace1Title,\n                        titlefont       : {color: plotConfig.trace1Color},\n                        tickfont        : {color:plotConfig.trace1Color},\n                        gridcolor       : plotConfig.trace1GridColor,\n                        zerolinecolor   : plotConfig.trace1GridColor,\n                        linecolor       : plotConfig.trace1GridColor,\n//                        range: [0, 2]\n        \n                    },\n                    yaxis2:\n                    {\n                        title           : plotConfig.trace2Title,\n                        titlefont       : {color: plotConfig.trace2Color},\n                        tickfont        : {color:plotConfig.trace2Color},\n                        gridcolor       : plotConfig.trace2GridColor,\n                        zerolinecolor   : plotConfig.trace2GridColor,\n                        linecolor       : plotConfig.trace2GridColor,\n                        overlaying: 'y',\n                        side: 'right',\n//                        range: [0, 2]\n                    },\n                    margin: \n                        {\n                            t: 30, //top margin\n        //                    l: 0, //left margin\n        //                    r: 0, //right margin\n        //                    b: 20 //bottom margin\n                        },\n                };\n                this.trace1 = \n                {\n                    x: [],\n                    y: [],\n                    name: plotConfig.trace1Title,\n                    yaxis: 'y1',\n                    type: 'scatter',\n                    mode: 'lines',\n                    line: {color: this.plotConfig.trace1Color}\n            \n                };\n                this.trace2 = \n                {\n                    x: [],\n                    y: [],\n                    name: plotConfig.trace2Title,\n                    yaxis: 'y2',\n                    type: 'scatter',\n                    mode: 'lines',\n                    line: {color: this.plotConfig.trace2Color}\n            \n                };\n            }\n            addTracePoints(trace1Pt, trace2Pt)\n            {\n                var now = (new Date().getTime() - this.plotStartTime) / 1000;\n                var plotBeginning = now - this.plotConfig.plotLength;\n                var removeDone = false;\n                while(!removeDone)\n                {\n                    if (this.trace1.x[0] < plotBeginning)\n                    {\n                        this.trace1.x.shift();\n                        this.trace1.y.shift();\n                        this.trace2.x.shift();\n                        this.trace2.y.shift();\n                    }\n                    else\n                    {\n                        removeDone = true;\n                    }\n                }\n        \n                this.trace1.x.push(now);\n                this.trace1.y.push(trace1Pt);\n                this.trace2.x.push(now);\n                this.trace2.y.push(trace2Pt);\n                Plotly.newPlot(this.plotConfig.htmlId, [this.trace1, this.trace2], this.layout);\n            }\n        }\n",
         "output": "str",
         "x": 700,
-        "y": 1180,
+        "y": 220,
         "wires": [
             [
-                "a3604a95.db42b8"
+                "3314480b.6b31c8"
             ]
         ]
     },
     {
-        "id": "a3604a95.db42b8",
+        "id": "3314480b.6b31c8",
         "type": "template",
-        "z": "5f562f66.a301e",
+        "z": "5d5fc264.fc823c",
         "name": "script.global",
         "field": "payload.script.global",
         "fieldType": "msg",
         "format": "javascript",
         "syntax": "mustache",
-        "template": "// Global Javascript\n        var plotConfig = \n        {\n            trace1Title : 'Count Per Minute',\n            trace1Color : '#557a95',\n            trace1GridColor : '#beceda',\n            trace2Title : 'Average Interval (uS)',\n            trace2Color : '#f2a31f',\n            plotLength  : 600,\n            width   : '',\n            height  :   '500',\n            htmlId  :   'historyStripChart'\n        };\n        var restfulDevice = \n        {\n            deviceType  : '{{{payload.script.deviceType}}}',\n            name        : '{{{payload.script.name}}}',\n            project     : '{{{payload.script.project}}}'\n        };\n        var mqttDevice = null;\n        var device = null;\n        let historyStripChart = new StripChart(plotConfig);\n        var nsamplesChanged = false;\n        var intervalArray = [];\n        var audioAlarm = new Audio('/audio/geiger1.ogg');\n        var audioAlarmOn = false;\n\n        var archiveRequestList = [];\n        var archiveList = [];\n\n        useWebSockets(true);\n        function onDocumentReady()\n        {\n            $('#nsamplesButtonId').hide();\n            $('#lightningID').hide();\n        }\n        function onWebSocketOpen()\n        {\n//            getArchive(24);\n        }\n        function onWebSocketClose()\n        {\n            \n        }\n        function onWebSocketMessage(msg)\n        {\n            switch(msg.topic)\n            {\n                case 'readings':\n                    if (msg.mqttDevice.name == restfulDevice.name)\n                    {\n                        heartbeat();\n                        device = msg.payload;\n                        mqttDevice = msg.mqttDevice;\n                        updateDmaReadings();\n                    }\n                    break;\n                case 'getArchiveValues':\n                    if (msg.userID == userID)\n                    {\n                        if ((msg.payload.device.deviceType == restfulDevice.deviceType) && (msg.payload.device.name == restfulDevice.name) )\n                            putArchiveValues(msg.payload);\n                    }\n                    break;\n                case 'getJwtToken':\n                    if (msg.userID == userID) loadJwtToken(msg);\n                    break;\n                case 'settingAcknowledge':\n                    if (msg.userID == userID)\n                    {\n                        if (msg.payload != 'Success!') acknowledgeDialog('Acknowledge', 'Setting', msg.payload);\n                    }\n                    break;\n                default:\n                // code block\n            }\n        }\n        function nsamplesChange()\n        {\n            nsamplesChanged = true;\n            $('#nsamplesButtonId').show();\n\n        }\n        function setScalarValue(settingValue, attrName)\n        {\n            var settingAttr = device[attrName];\n            if ( (settingAttr.alarm.limits.lolo <= settingValue) && (settingValue <= settingAttr.alarm.limits.hihi) )\n            {\n                settingAttr.value = settingValue;\n                var mqttMessage = \n                {\n                    topic   : mqttDevice.project + '/' +  mqttDevice.deviceType + '/' +  mqttDevice.name + '/setting',\n                    payload :  device\n                };\n                checkLogin(sendSettingToMqtt, mqttMessage);\n            } \n            else\n            {\n                acknowledgeDialog('Acknowledge', 'Error', 'Entry outside range! (' + settingAttr.alarm.limits.lolo.toString() + '-' + settingAttr.alarm.limits.hihi.toString() + ' ' + settingAttr.unit);\n            }\n        }\n        function nsamples()\n        {\n            $('#nsamplesButtonId').hide();\n            if (isNaN($('#nsamplesInputId').val()))\n            {\n                nsamplesChanged = false;\n                return;\n            }\n            setScalarValue(Number($('#nsamplesInputId').val()), 'nsamples');\n            nsamplesChanged = false;\n        }\n        function toggleSound()\n        {\n            audioAlarmOn = !audioAlarmOn;\n            if(audioAlarmOn)\n            {\n                $('#soundButtonId').css('color', 'black'); \n                $('#soundButtonId').css('background-color', 'green'); \n                $('#soundButtonId').text('On'); \n            }\n            else\n            {\n                $('#soundButtonId').css('color', 'black'); \n                $('#soundButtonId').css('background-color', 'grey'); \n                $('#soundButtonId').text('Off'); \n            }\n\n        }\n",
+        "template": "// Global Javascript\n        var plotConfig = \n        {\n            trace1Title : 'Count Per Minute',\n            trace1Color : '#557a95',\n            trace1GridColor : '#beceda',\n            trace2Title : 'Average Interval (uS)',\n            trace2Color : '#f2a31f',\n            plotLength  : 600,\n            width   : '',\n            height  :   '500',\n            htmlId  :   'historyStripChart'\n        };\n        var restfulDevice = \n        {\n            deviceType  : '{{{payload.script.deviceType}}}',\n            name        : '{{{payload.script.name}}}',\n            project     : '{{{payload.script.project}}}'\n        };\n        var mqttDevice = null;\n        var device = null;\n        let historyStripChart = new StripChart(plotConfig);\n        var nsamplesChanged = false;\n        var intervalArray = [];\n        var audioAlarm = new Audio('/audio/geiger1.ogg');\n        var audioAlarmOn = false;\n\n        var archiveRequestList = [];\n        var archiveList = [];\n\n        useWebSockets(true);\n        function onDocumentReady()\n        {\n            $('#nsamplesButtonId').hide();\n            $('#lightningID').hide();\n        }\n        function onWebSocketOpen()\n        {\n//            getArchive(24);\n            messageDialog('Info', 'Hold Still!', 'Waiting for a cosmic Event');\n        }\n        function onWebSocketClose()\n        {\n            \n        }\n        function onWebSocketMessage(msg)\n        {\n            switch(msg.topic)\n            {\n                case 'readings':\n                    if (msg.mqttDevice.name == restfulDevice.name)\n                    {\n                        heartbeat();\n                        device = msg.payload;\n                        mqttDevice = msg.mqttDevice;\n                        updateDmaReadings();\n                    }\n                    break;\n                case 'getArchiveValues':\n                    if (msg.userID == userID)\n                    {\n                        if ((msg.payload.device.deviceType == restfulDevice.deviceType) && (msg.payload.device.name == restfulDevice.name) )\n                            putArchiveValues(msg.payload);\n                    }\n                    break;\n                case 'getJwtToken':\n                    if (msg.userID == userID) loadJwtToken(msg);\n                    break;\n                case 'settingAcknowledge':\n                    if (msg.userID == userID)\n                    {\n                        if (msg.payload != 'Success!') acknowledgeDialog('Acknowledge', 'Setting', msg.payload);\n                    }\n                    break;\n                default:\n                // code block\n            }\n        }\n        function nsamplesChange()\n        {\n            nsamplesChanged = true;\n            $('#nsamplesButtonId').show();\n\n        }\n        function setScalarValue(settingValue, attrName)\n        {\n            var settingAttr = device[attrName];\n            if ( (settingAttr.alarm.limits.lolo <= settingValue) && (settingValue <= settingAttr.alarm.limits.hihi) )\n            {\n                settingAttr.value = settingValue;\n                var mqttMessage = \n                {\n                    topic   : mqttDevice.project + '/' +  mqttDevice.deviceType + '/' +  mqttDevice.name + '/setting',\n                    payload :  device\n                };\n                checkLogin(sendSettingToMqtt, mqttMessage);\n            } \n            else\n            {\n                acknowledgeDialog('Acknowledge', 'Error', 'Entry outside range! (' + settingAttr.alarm.limits.lolo.toString() + '-' + settingAttr.alarm.limits.hihi.toString() + ' ' + settingAttr.unit);\n            }\n        }\n        function nsamples()\n        {\n            $('#nsamplesButtonId').hide();\n            if (isNaN($('#nsamplesInputId').val()))\n            {\n                nsamplesChanged = false;\n                return;\n            }\n            setScalarValue(Number($('#nsamplesInputId').val()), 'nsamples');\n            nsamplesChanged = false;\n        }\n        function toggleSound()\n        {\n            audioAlarmOn = !audioAlarmOn;\n            if(audioAlarmOn)\n            {\n                $('#soundButtonId').css('color', 'black'); \n                $('#soundButtonId').css('background-color', 'green'); \n                $('#soundButtonId').text('On'); \n            }\n            else\n            {\n                $('#soundButtonId').css('color', 'black'); \n                $('#soundButtonId').css('background-color', 'grey'); \n                $('#soundButtonId').text('Off'); \n            }\n\n        }\n",
         "output": "str",
         "x": 670,
-        "y": 1220,
+        "y": 260,
         "wires": [
             [
-                "c574b0f3.ce5a1"
+                "4d1e27ea.ffe8a8"
             ]
         ]
     },
     {
-        "id": "c574b0f3.ce5a1",
+        "id": "4d1e27ea.ffe8a8",
         "type": "template",
-        "z": "5f562f66.a301e",
+        "z": "5d5fc264.fc823c",
         "name": "script.updateReadings",
         "field": "payload.script.updateReadings",
         "fieldType": "msg",
         "format": "javascript",
         "syntax": "mustache",
-        "template": "// Update Readings Javascript\n        function updateDmaReadings()\n        {\n            if (audioAlarmOn)\n            {\n                var playPromise = audioAlarm.play();\n                if (playPromise !== undefined) \n                {\n                    playPromise.then(_ => \n                    {\n                    // Automatic playback started!\n                    // Show playing UI.\n                    }).catch(error => \n                    {\n                    // Auto-play was prevented\n                    // Show paused UI.\n                    });\n                 }\n            }\n\n            $('#linkQualityId').text(device.linkQuality.value);\n            $('#signalLevelId').text(device.signalLevel.value);\n            $('#bt0RSSIId').text(device.bt0RSSI.value);\n            var avgIntervalReading = device.avgInterval.value;\n            var cpmReading = device.cpm.value;\n            var intervalReading = device.interval.value;\n            historyStripChart.addTracePoints(cpmReading, avgIntervalReading);\n            $('#cpmReadingId').text(cpmReading);\n            $('#avgIntervalReadingId').text(avgIntervalReading);\n            $('#intervalReadingId').text(intervalReading);\n            if (!nsamplesChanged)\n            {\n                $('#nsamplesInputId').val(device.nsamples.value);\n            }\n            intervalArray.push(0.01 * Math.round(intervalReading / 10));\n            while (intervalArray.length > 1000)\n            {\n                intervalArray.shift();\n            }\n            var layout = {title: \"Interval (S)\", xaxis: {title: \"Interval (S)\"}, yaxis: {title: \"Count\"}};\n\n//            Plotly.newPlot('intervalHistogramChart', [{x: intervalArray, type:'histogram',  autobinx: false, xbins: {end: 10,size: 0.5,start: 0} }]);\n            Plotly.newPlot('intervalHistogramChart', [{x: intervalArray, type:'histogram',  xbins: {size: 0.5,start: 0} }],layout);\n            $('#lightningID').show();\n            setTimeout(function(){$('#lightningID').hide();},500);\n            \n        }\n",
+        "template": "// Update Readings Javascript\n        function updateDmaReadings()\n        {\n            $( \"#messageDialog\" ).dialog( \"close\" );\n            if (audioAlarmOn)\n            {\n                var playPromise = audioAlarm.play();\n                if (playPromise !== undefined) \n                {\n                    playPromise.then(_ => \n                    {\n                    // Automatic playback started!\n                    // Show playing UI.\n                    }).catch(error => \n                    {\n                    // Auto-play was prevented\n                    // Show paused UI.\n                    });\n                 }\n            }\n\n            $('#linkQualityId').text(device.linkQuality.value);\n            $('#signalLevelId').text(device.signalLevel.value);\n            var avgIntervalReading = device.avgInterval.value;\n            var cpmReading = device.cpm.value;\n            var intervalReading = device.interval.value;\n            historyStripChart.addTracePoints(cpmReading, avgIntervalReading);\n            $('#cpmReadingId').text(cpmReading);\n            $('#avgIntervalReadingId').text(avgIntervalReading);\n            $('#intervalReadingId').text(intervalReading);\n            if (!nsamplesChanged)\n            {\n                $('#nsamplesInputId').val(device.nsamples.value);\n            }\n            intervalArray.push(0.01 * Math.round(intervalReading / 10));\n            while (intervalArray.length > 1000)\n            {\n                intervalArray.shift();\n            }\n            var layout = {title: \"Interval (S)\", xaxis: {title: \"Interval (S)\"}, yaxis: {title: \"Count\"}};\n\n//            Plotly.newPlot('intervalHistogramChart', [{x: intervalArray, type:'histogram',  autobinx: false, xbins: {end: 10,size: 0.5,start: 0} }]);\n            Plotly.newPlot('intervalHistogramChart', [{x: intervalArray, type:'histogram',  xbins: {size: 0.5,start: 0} }],layout);\n            $('#lightningID').show();\n            setTimeout(function(){$('#lightningID').hide();},500);\n            \n        }\n",
         "output": "str",
         "x": 700,
-        "y": 1260,
+        "y": 300,
         "wires": [
             [
-                "ce43ed6.d50ad1"
+                "99fffa8.211fa08"
             ]
         ]
     },
     {
-        "id": "81b6c690.caa228",
+        "id": "9c20c9c4.b91198",
         "type": "template",
-        "z": "5f562f66.a301e",
+        "z": "5d5fc264.fc823c",
         "name": "script.editDevice",
         "field": "payload.script.editDevice",
         "fieldType": "msg",
@@ -1273,17 +1289,17 @@
         "template": "// Edit Temp JavaScript\n       $( function() \n        {\n            $( \"#editDeviceDialog\" ).dialog(\n                {\n//                    closeOnEscape: false,\n//                    open: function(event, ui) {$(\".ui-dialog-titlebar-close\", ui.dialog | ui).hide();},\n                    width:    640,\n                    autoOpen: false,\n                    buttons:\n                    [\n                        {\n                            text: \"Set\",\n                            click: function() {setDevice(); $( this ).dialog( \"close\" );},\n                            showText: false\n                        },\n                        {\n                            text: \"Cancel\",\n                            click: function() \n                            {\n                                $( this ).dialog( \"close\" ); \n                            },\n                            showText: false\n                        }\n                    ]\n                });\n        } );\n        function editDevice(attrName)\n        {\n            $( \"#editDeviceDialog\" ).dialog( \"option\", \"title\", \"Edit\"); \n            editedAttribute = attrName;\n            $( \"#editDeviceDialogAttribute\").html(attrName);\n\n            var attr = device[attrName];\n            $( \"#loloAlarm\").val(attr.alarm.limits.lolo);\n            $( \"#lowAlarm\").val(attr.alarm.limits.low);\n            $( \"#highAlarm\").val(attr.alarm.limits.high);\n            $( \"#hihiAlarm\").val(attr.alarm.limits.hihi);\n            $( \"#notifyName\").val(attr.alarm.notify.name);\n            $( \"#notifyNumber\").val(attr.alarm.notify.number);\n\n            $( \"#editDeviceDialog\" ).dialog( \"open\" );\n        }\n        function setDevice()\n        {\n            var attr = device[editedAttribute];\n            if (isNaN($('#loloAlarm').val()) \n                || isNaN($('#lowAlarm').val()) \n                || isNaN($('#highAlarm').val()) \n                || isNaN($('#hihiAlarm').val()))\n            {\n                acknowledgeDialog('Error', 'Entry not a number!', editedAttribute);\n                editedAttribute = '';\n                return;\n            }\n            editedAttribute = '';\n\n            attr.alarm.limits.lolo = Number($( \"#loloAlarm\").val());\n            attr.alarm.limits.low = Number($( \"#lowAlarm\").val());\n            attr.alarm.limits.high = Number($( \"#highAlarm\").val());\n            attr.alarm.limits.hihi = Number($( \"#hihiAlarm\").val());\n            attr.alarm.notify.number =  $( \"#notifyNumber\").val();\n            attr.alarm.notify.name = $( \"#notifyName\").val();\n            var mqttMessage = \n            {\n                topic   : mqttDevice.project + '/' +  mqttDevice.deviceType + '/' +  mqttDevice.name + '/setting',\n                payload :  device\n            };\n            checkLogin(sendSettingToMqtt, mqttMessage);\n        }\n",
         "output": "str",
         "x": 680,
-        "y": 1340,
+        "y": 380,
         "wires": [
             [
-                "4bd8d01f.eb1ee"
+                "3a2cf37f.46415c"
             ]
         ]
     },
     {
-        "id": "ea612d01.18bef",
+        "id": "e3a86065.4a258",
         "type": "template",
-        "z": "5f562f66.a301e",
+        "z": "5d5fc264.fc823c",
         "name": "javascript",
         "field": "payload.javascript",
         "fieldType": "msg",
@@ -1292,17 +1308,17 @@
         "template": "{{{payload.script.stripChartWidget}}}\n{{{payload.script.global}}}\n{{{payload.script.updateReadings}}}\n{{{payload.script.archive}}}\n{{{payload.script.editDevice}}}\n{{{payload.script.dangerZone}}}\n",
         "output": "str",
         "x": 660,
-        "y": 1420,
+        "y": 460,
         "wires": [
             [
-                "c637fc55.d58d"
+                "6b1cf5ab.6eb91c"
             ]
         ]
     },
     {
-        "id": "e8fcfdd3.ae407",
+        "id": "69654ec9.a3fc5",
         "type": "template",
-        "z": "5f562f66.a301e",
+        "z": "5d5fc264.fc823c",
         "name": "body",
         "field": "payload.body",
         "fieldType": "msg",
@@ -1311,17 +1327,17 @@
         "template": "    <div width=\"100%\">\n        <div class='row' style='padding-bottom: 25px;'>\n            <div class='col-md-12' align='center'>\n{{{payload.html.dashboard}}}\n            </div>\n        </div>\n        <div class='row' style='padding-bottom: 25px;'>\n            <div class='col-md-12' align='center'>\n{{{payload.html.histogram}}}\n            </div>\n        </div>\n        <div class='row' style='padding-bottom: 25px;'>\n            <div class='col-md-12' align='center'>\n{{{payload.html.history}}}\n            </div>\n        </div>\n        <div class='row' style='padding-bottom: 25px;'>\n            <div class='col-md-12'>\n{{{payload.html.wifimon}}}\n            </div>\n        </div>\n        <div class='row' style='padding-bottom: 25px;'>\n            <div class='col-md-12'>\n{{{payload.html.dangerZone}}}\n            </div>\n        </div>\n    </div>",
         "output": "str",
         "x": 970,
-        "y": 1420,
+        "y": 460,
         "wires": [
             [
-                "3bf18bd2.6f9704"
+                "bd77c095.6b011"
             ]
         ]
     },
     {
-        "id": "90c7a925.242958",
+        "id": "dea55e03.98b6a",
         "type": "template",
-        "z": "5f562f66.a301e",
+        "z": "5d5fc264.fc823c",
         "name": "html.wifimon",
         "field": "payload.html.wifimon",
         "fieldType": "msg",
@@ -1330,17 +1346,17 @@
         "template": "<!-- Dashboard HTML -->\n                <div class='card'>\n                    <p class='card-title'>WiFi Connection</p>\n                    <div class='card-body' align=\"center\">\n                        <div class='row'  style='padding-top: 0px;'>\n                            <table width='100%'>\n                                <tr>\n                                    <td width='60%' >\n                                        <span class='card-text' >Device Update</span>\n                                    </td>\n                                    <td width='20%' align='center'></td>\n                                    <td width='20%' align='center'>\n                                        <img src='/img/heartRed.png' id='heartBeatID' width='100px' height='100px'/>\n                                    </td>\n                                </tr>\n                                <tr>\n                                    <td width='60%' >\n                                        <span class='card-text' >Signal Level (dBm)</span>\n                                    </td>\n                                    <td width='20%' align='center'></td>\n                                    <td width='20%' align='center'>\n                                        <span class='card-text' id='signalLevelId' >-100</span>\n                                    </td>\n                                </tr>\n                                <tr>\n                                    <td width='60%' >\n                                        <span class='card-text' >Link Quality (/70)</span>\n                                    </td>\n                                    <td width='20%' align='center'></td>\n                                    <td width='20%' align='center'>\n                                        <span class='card-text' id='linkQualityId' >-1</span>\n                                    </td>\n                                </tr>\n                            </table>\n                        </div>\n                    </div>\n                </div>\n",
         "output": "str",
         "x": 990,
-        "y": 1340,
+        "y": 380,
         "wires": [
             [
-                "3efd96de.abb7aa"
+                "1ac097f0.3ab748"
             ]
         ]
     },
     {
-        "id": "474a887f.9c76d8",
+        "id": "f667972.3cfe568",
         "type": "template",
-        "z": "5f562f66.a301e",
+        "z": "5d5fc264.fc823c",
         "name": "html.archive",
         "field": "payload.html.archive",
         "fieldType": "msg",
@@ -1349,17 +1365,17 @@
         "template": "<!-- Archive HTML -->\n                <div class='card'>\n                    <p class='card-title'>Archive</p>\n                    <div class='card-body' align=\"center\">\n                        <div class='row' >\n                            <table width='100%'>\n                                <tr>\n                                    <td width='10%' align='center'>\n                                        <button class='btn btn-block big-text' style='background-color:var(--color1);color:var(--color5)' id=\"archive2hrButton\" onclick=\"getArchive(2)\" >2</button>\n                                    </td>\n                                    <td width='10%'  align='center'>\n                                        <button class='btn btn-block big-text' style='background-color:var(--color1);color:var(--color5)' id=\"archive4hrButton\" onclick=\"getArchive(4)\" >4</button>\n                                    </td>\n                                    <td width='10%'  align='center'>\n                                        <button class='btn btn-block big-text' style='background-color:var(--color1);color:var(--color5)' id=\"archive8hrButton\" onclick=\"getArchive(8)\" >8</button>\n                                    </td>\n                                    <td width='10%'  align='center'>\n                                        <button class='btn btn-block big-text' style='background-color:var(--color1);color:var(--color5)' id=\"archive24hrButton\" onclick=\"getArchive(24)\" >24</button>\n                                    </td>\n                                    <td width='10%' align='center'>\n                                        <button class='btn btn-block big-text' style='background-color:var(--color1);color:var(--color5)' id=\"archive72hrButton\" onclick=\"getArchive(72)\" >72</button>\n                                    </td>\n                                    <td width='10%' align='center'>\n                                        <button class='btn btn-block big-text' style='background-color:var(--color1);color:var(--color5)' id=\"archive168hrButton\" onclick=\"getArchive(168)\" >168</button>\n                                    </td>\n                                    <td width='10%' align='center'>\n                                        <span class='big-text' >Hours</span>\n                                    </td>\n                                </tr>\n                            </table>\n                        </div>\n                        <div class='row vert-pad'>\n                            <div class='col-md-12'>\n                                <div id=\"archiveChart\" width=\"100%\" ></div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n",
         "output": "str",
         "x": 990,
-        "y": 1300,
+        "y": 340,
         "wires": [
             [
-                "90c7a925.242958"
+                "dea55e03.98b6a"
             ]
         ]
     },
     {
-        "id": "abb0e0f8.cfa4",
+        "id": "b11638c1.f9d868",
         "type": "template",
-        "z": "5f562f66.a301e",
+        "z": "5d5fc264.fc823c",
         "name": "html.history",
         "field": "payload.html.history",
         "fieldType": "msg",
@@ -1368,17 +1384,17 @@
         "template": "<!-- History HTML -->\n                <div class='card'>\n                    <p class='card-title'>History</p>\n                    <div class='card-body' align=\"center\">\n                        <div id=\"historyStripChart\" width=\"100%\" ></div>\n                    </div>\n                </div>\n",
         "output": "str",
         "x": 990,
-        "y": 1220,
+        "y": 260,
         "wires": [
             [
-                "3bce7c3c.446784"
+                "900ea3e5.8b22b"
             ]
         ]
     },
     {
-        "id": "c637fc55.d58d",
+        "id": "6b1cf5ab.6eb91c",
         "type": "template",
-        "z": "5f562f66.a301e",
+        "z": "5d5fc264.fc823c",
         "name": "html.dashboard",
         "field": "payload.html.dashboard",
         "fieldType": "msg",
@@ -1387,17 +1403,17 @@
         "template": "<!-- Dashboard HTML -->\n                <div class='card'>\n                    <p class='card-title'>Dashboard</p>\n                    <div class='card-body' align=\"center\">\n                        <div class='row' style='padding-bottom: 25px;'>\n                            <table width='100%'>\n                                <tr>\n                                    <td width='60%' >\n                                        <span class='card-text' >Counts Per Minute</span>\n                                    </td>\n                                    <td width='20%' align='center'>\n                                        <span class='card-text' id='cpmReadingId' >-100</span>\n                                    </td>\n                                    <td width='20%'>\n                                        <button class='btn btn-block card-button big-text' onclick=\"editDevice('cpm')\" >Edit</button>\n                                    </td>\n                                </tr>\n                                <tr>\n                                    <td width='60%' >\n                                        <span class='card-text' >Avg. Interval (uS)</span>\n                                    </td>\n                                    <td width='20%' align='center'>\n                                        <span class='card-text' id='avgIntervalReadingId' >-100</span>\n                                    </td>\n                                    <td width='20%'>\n                                        <button class='btn btn-block card-button big-text' onclick=\"editDevice('avgInterval')\" >Edit</button>\n                                    </td>\n                                </tr>\n                                <tr>\n                                    <td width='60%' >\n                                        <span class='card-text' >Interval (uS)</span>\n                                    </td>\n                                    <td width='20%' align='center'>\n                                        <span class='card-text' id='intervalReadingId' >-100</span>\n                                    </td>\n                                    <td width='20%'>\n                                        <button class='btn btn-block card-button big-text' onclick=\"editDevice('interval')\" >Edit</button>\n                                    </td>\n                                </tr>\n                                <tr>\n                                    <td width='60%'>\n                                        <span class='card-text' >Filter Samples</span>\n                                    </td>\n                                    <td width='20%'>\n                                        <input id=\"nsamplesInputId\" type=\"text\" value=\"0\" class=\"big-text\"  size=\"8\" oninput=\"nsamplesChange()\"/>\n                                    </td>\n                                    <td width='20%'>\n                                        <button class='btn btn-block card-button big-text' id=\"nsamplesButtonId\" onclick=\"nsamples()\" >&#10003;</button>\n                                    </td>\n                                </tr>\n                                <tr>\n                                    <td width='60%' >\n                                        <span class='card-text' >Cosmic Sound</span>\n                                    </td>\n                                    <td width='20%' align='center'>\n                                        <img id='lightningID' src=\"/img/lightning.png\" height='70px'/>\n                                    </td>\n                                    <td width='20%' align='center'>\n                                        <button class='btn btn-block big-text' style='background-color:grey;color:black' id='soundButtonId' onclick=\"toggleSound()\" >Off</button>\n                                    </td>\n                                </tr>\n                            </table>\n                        </div>\n                   </div>\n                </div>\n                <div id=\"editDeviceDialog\" title=\"Edit Device\" class='card'>\n                    <p class='card-title' id='editDeviceDialogAttribute'>Attribute</p>\n                    <div class='card-body'>\n                        <table>\n                            <tr>\n                                <td width=\"70%\" align=\"left\">  <span class=\"tableHeading tableText\">LoLo</span></td>\n                                <td width=\"30%\" align=\"right\"><input class=\"form-control tableText\" id=\"loloAlarm\" type=\"text\" value=\"0\" /></td>\n                            </tr>\n                            <tr>\n                                <td width=\"70%\" align=\"left\">  <span class=\"tableHeading tableText\">LOW</span></td>\n                                <td width=\"30%\" align=\"right\"><input class=\"form-control tableText\" id=\"lowAlarm\" type=\"text\" value=\"0\" /></td>\n                            </tr>\n                            <tr>\n                                <td width=\"70%\" align=\"left\">  <span class=\"tableHeading tableText\">HIGH</span></td>\n                                <td width=\"30%\" align=\"right\"><input class=\"form-control tableText\" id=\"highAlarm\" type=\"text\" value=\"0\" /></td>\n                            </tr>\n                            <tr>\n                                <td width=\"70%\" align=\"left\">  <span class=\"tableHeading tableText\">HiHi</span></td>\n                                <td width=\"30%\" align=\"right\"><input class=\"form-control tableText\" id=\"hihiAlarm\" type=\"text\" value=\"0\" /></td>\n                            </tr>\n                            <tr>\n                                <td width=\"70%\" align=\"left\">  <span class=\"tableHeading tableText\">Notify Name</span></td>\n                                <td width=\"30%\" align=\"right\"><input class=\"form-control tableText\" id=\"notifyName\" type=\"text\" value=\"\" /></td>\n                            </tr>\n                            <tr>\n                                <td width=\"70%\" align=\"left\">  <span class=\"tableHeading tableText\">Notify Number</span></td>\n                                <td width=\"30%\" align=\"right\"><input class=\"form-control tableText\" id=\"notifyNumber\" type=\"text\" value=\"\" /></td>\n                            </tr>\n                        </table>\n                    </div>\n                </div>",
         "output": "str",
         "x": 1000,
-        "y": 1180,
+        "y": 220,
         "wires": [
             [
-                "abb0e0f8.cfa4"
+                "b11638c1.f9d868"
             ]
         ]
     },
     {
-        "id": "ce43ed6.d50ad1",
+        "id": "99fffa8.211fa08",
         "type": "template",
-        "z": "5f562f66.a301e",
+        "z": "5d5fc264.fc823c",
         "name": "script.archive",
         "field": "payload.script.archive",
         "fieldType": "msg",
@@ -1406,17 +1422,17 @@
         "template": "// Archive JavaScript\n        function getArchive(hours)\n        { \n            if (hours > 2) messageDialog('Info', 'Wait', 'Getting Archive Data');\n            $('#archive2hrButton').attr(\"disabled\", true); \n            $('#archive4hrButton').attr(\"disabled\", true); \n            $('#archive8hrButton').attr(\"disabled\", true); \n            $('#archive24hrButton').attr(\"disabled\", true); \n            $('#archive72hrButton').attr(\"disabled\", true); \n            $('#archive168hrButton').attr(\"disabled\", true); \n            $('#archive2hrButton').css('color', 'var(--color5)'); \n            $('#archive2hrButton').css('background-color', 'var(--color1)'); \n            $('#archive4hrButton').css('color', 'var(--color5)'); \n            $('#archive4hrButton').css('background-color', 'var(--color1)'); \n            $('#archive8hrButton').css('color', 'var(--color5)'); \n            $('#archive8hrButton').css('background-color', 'var(--color1)'); \n            $('#archive24hrButton').css('color', 'var(--color5)'); \n            $('#archive24hrButton').css('background-color', 'var(--color1)'); \n            $('#archive72hrButton').css('color', 'var(--color5)'); \n            $('#archive72hrButton').css('background-color', 'var(--color1)'); \n            $('#archive168hrButton').css('color', 'var(--color5)'); \n            $('#archive168hrButton').css('background-color', 'var(--color1)'); \n            switch(hours)\n            {\n                case 2:\n                    $('#archive2hrButton').css('color', 'var(--color1)'); \n                    $('#archive2hrButton').css('background-color', 'var(--color5)'); \n                    break;\n                case 4:\n                    $('#archive4hrButton').css('color', 'var(--color1)'); \n                    $('#archive4hrButton').css('background-color', 'var(--color5)'); \n                    break;\n                case 8:\n                    $('#archive8hrButton').css('color', 'var(--color1)'); \n                    $('#archive8hrButton').css('background-color', 'var(--color5)'); \n                    break;\n                case 24:\n                    $('#archive24hrButton').css('color', 'var(--color1)'); \n                    $('#archive24hrButton').css('background-color', 'var(--color5)'); \n                    break;\n                case 72:\n                    $('#archive72hrButton').css('color', 'var(--color1)'); \n                    $('#archive72hrButton').css('background-color', 'var(--color5)'); \n                    break;\n                case 168:\n                    $('#archive168hrButton').css('color', 'var(--color1)'); \n                    $('#archive168hrButton').css('background-color', 'var(--color5)'); \n                    break;\n                default:\n                // code block\n            }\n\n            archiveRequestList = [];\n            archiveList = [];\n            var stopDate = new Date().getTime();\n            var startDate = stopDate - hours * 3600000;\n            archiveRequestList[0] = \n            {\n                deviceType : restfulDevice.deviceType,\n                name : restfulDevice.name, \n                attr : ['ledStateReading','ledStateSetting'],\n                startDate: startDate, \n                stopDate: stopDate,\n            };\n            getArchiveValues();\n        }\n        function getArchiveValues()\n        {\n            sendWebSocketMessageObject(\n                {\n                    topic       : 'getArchive',\n                    userID      : userID,\n                    device      : archiveRequestList[0],\n                 });\n            archiveRequestList.shift();\n            return;\n        }\n        function putArchiveValues(data)\n        {\n            archiveList.push(data);\n            if (archiveRequestList.length > 0)\n            {\n                getArchiveValues();\n            }\n            else\n            {\n                plotArchive();\n            }\n        }\n\n        function plotArchive()\n        {\n            $( \"#messageDialog\" ).dialog( \"close\" );\n            var layout =\n            {\n                showlegend  : true,\n                legend      : { x: 0, y: 1.15},\n                height      : '500',\n                width       : '',\n                xaxis       :\n                {\n                    title: 'Hours since ' + new Date(archiveList[0].device.stopDate).toLocaleString(),\n                },\n                yaxis:\n                {\n                    title           : plotConfig.trace1Title,\n                    titlefont       : {color: plotConfig.trace1Color},\n                    tickfont        : {color:plotConfig.trace1Color},\n                    gridcolor       : plotConfig.trace1GridColor,\n                    zerolinecolor   : plotConfig.trace1GridColor,\n                    linecolor       : plotConfig.trace1GridColor,\n                    range: [0, 2]\n    \n                },\n                yaxis2:\n                {\n                    title           : plotConfig.trace2Title,\n                    titlefont       : {color: plotConfig.trace2Color},\n                    tickfont        : {color:plotConfig.trace2Color},\n                    gridcolor       : plotConfig.trace2GridColor,\n                    zerolinecolor   : plotConfig.trace2GridColor,\n                    linecolor       : plotConfig.trace2GridColor,\n                    overlaying: 'y',\n                    side: 'right',\n                    range: [0, 2]\n                },\n                margin: \n                    {\n                        t: 30, //top margin\n    //                    l: 0, //left margin\n    //                    r: 0, //right margin\n    //                    b: 20 //bottom margin\n                    },\n            };\n            this.trace1 = \n            {\n                x: [],\n                y: [],\n                name: plotConfig.trace1Title,\n                yaxis: 'y1',\n                type: 'scatter',\n                mode: 'lines',\n                line: {color: this.plotConfig.trace1Color}\n        \n            };\n            this.trace2 = \n            {\n                x: [],\n                y: [],\n                name: plotConfig.trace2Title,\n                yaxis: 'y2',\n                type: 'scatter',\n                mode: 'lines',\n                line: {color: this.plotConfig.trace2Color}\n        \n            };\n            for (var ii = 0; ii < archiveList[0].trace.length; ++ii)\n            {\n                var x = (archiveList[0].trace[ii].timeStamp - archiveList[0].device.stopDate) / 3600000.0;\n                trace1.x[ii] = x;\n                trace1.y[ii] = archiveList[0].trace[ii][archiveList[0].device.attr[0]] ;\n                trace2.x[ii] = x;\n                trace2.y[ii] = archiveList[0].trace[ii][archiveList[0].device.attr[1]];\n            }\n\n\n            Plotly.newPlot('archiveChart', [trace1,trace2], layout);\n            $('#archive2hrButton').attr(\"disabled\", false); \n            $('#archive4hrButton').attr(\"disabled\", false); \n            $('#archive8hrButton').attr(\"disabled\", false); \n            $('#archive24hrButton').attr(\"disabled\", false); \n            $('#archive72hrButton').attr(\"disabled\", false); \n            $('#archive168hrButton').attr(\"disabled\", false); \n        }\n",
         "output": "str",
         "x": 670,
-        "y": 1300,
+        "y": 340,
         "wires": [
             [
-                "81b6c690.caa228"
+                "9c20c9c4.b91198"
             ]
         ]
     },
     {
-        "id": "3bce7c3c.446784",
+        "id": "900ea3e5.8b22b",
         "type": "template",
-        "z": "5f562f66.a301e",
+        "z": "5d5fc264.fc823c",
         "name": "html.histogram",
         "field": "payload.html.histogram",
         "fieldType": "msg",
@@ -1425,151 +1441,241 @@
         "template": "<!-- History HTML -->\n                <div class='card'>\n                    <p class='card-title'>Interval Histogram</p>\n                    <div class='card-body' align=\"center\">\n                        <div id=\"intervalHistogramChart\" width=\"100%\" ></div>\n                    </div>\n                </div>\n",
         "output": "str",
         "x": 1000,
-        "y": 1260,
+        "y": 300,
         "wires": [
             [
-                "474a887f.9c76d8"
+                "f667972.3cfe568"
             ]
         ]
     },
     {
-        "id": "8f14813b.bcdfc",
-        "type": "exec",
-        "z": "5f562f66.a301e",
-        "command": "pm2 restart red",
-        "addpay": false,
-        "append": "",
-        "useSpawn": "false",
-        "timer": "",
-        "oldrc": false,
-        "name": "",
-        "x": 760,
-        "y": 160,
-        "wires": [
-            [],
-            [],
-            []
-        ]
-    },
-    {
-        "id": "ea57f5c0.b55618",
-        "type": "mqtt in",
-        "z": "5f562f66.a301e",
-        "name": "Restart DMA",
-        "topic": "$(RESTARTDMATOPIC)",
-        "qos": "0",
-        "datatype": "auto",
-        "broker": "79250bf3.365cc4",
-        "x": 90,
-        "y": 160,
-        "wires": [
-            [
-                "808c8dcc.1f0ac"
-            ]
-        ]
-    },
-    {
-        "id": "808c8dcc.1f0ac",
-        "type": "json",
-        "z": "5f562f66.a301e",
-        "name": "",
-        "property": "payload",
-        "action": "",
-        "pretty": false,
-        "x": 230,
-        "y": 160,
-        "wires": [
-            [
-                "960991fa.0fafe"
-            ]
-        ]
-    },
-    {
-        "id": "960991fa.0fafe",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Check Restart Setting",
-        "func": "if (msg.payload != 1) return null\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 520,
-        "y": 160,
-        "wires": [
-            [
-                "8f14813b.bcdfc"
-            ]
-        ]
-    },
-    {
-        "id": "8fd42733.128c98",
-        "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Filter Websocket MQTT like message",
-        "func": "var msg1 = null;\nvar msg2 = null\nvar mqttArray = msg.topic.split('/');\nif (mqttArray[3] == 'restartDma')\n{\n    msg2 = msg;\n}\nelse\n{\n    msg1 = msg;\n}\n\nreturn [msg1,msg2];",
-        "outputs": 2,
-        "noerr": 0,
-        "x": 230,
-        "y": 100,
-        "wires": [
-            [
-                "7461da25.d86ac4"
-            ],
-            [
-                "960991fa.0fafe"
-            ]
-        ]
-    },
-    {
-        "id": "4bd8d01f.eb1ee",
+        "id": "1ac097f0.3ab748",
         "type": "template",
-        "z": "5f562f66.a301e",
-        "name": "script.dangerZone",
-        "field": "payload.script.dangerZone",
-        "fieldType": "msg",
-        "format": "javascript",
-        "syntax": "mustache",
-        "template": "// dangerZone JavaScript\n        function restartDma()\n        {\n            optionDialog('Danger! Will Robinson, Danger!', 'Restart DMA', 'This should not be done lightly', ['Reset DMA','Cancel'], [function (){restartDmaButtonPress();}, function (){$( \"#optionDialog\" ).dialog( \"close\" );}]);\n        }\n        function restartDmaButtonPress()\n        {\n            $( \"#optionDialog\" ).dialog( \"close\" );\n            var mqttMessage = \n            {\n                topic   : restfulDevice.project + '/' +  restfulDevice.deviceType + '/' +  restfulDevice.name + '/restartDma',\n                payload :  1\n            };\n            checkLogin(sendSettingToMqtt, mqttMessage);\n        }\n",
-        "output": "str",
-        "x": 690,
-        "y": 1380,
-        "wires": [
-            [
-                "ea612d01.18bef"
-            ]
-        ]
-    },
-    {
-        "id": "3efd96de.abb7aa",
-        "type": "template",
-        "z": "5f562f66.a301e",
+        "z": "5d5fc264.fc823c",
         "name": "html.dangerZone",
         "field": "payload.html.dangerZone",
         "fieldType": "msg",
         "format": "html",
         "syntax": "mustache",
-        "template": "                <div class='danger-card'>\n                    <div class='row'>\n                        <div class='col-md-2'>\n                        </div>\n                        <div class='col-md-8'>\n                            <p class='danger-card-title'>Danger Zone</p>\n                         </div>\n                        <div class='col-md-2'>\n                        </div>\n                    </div>\n                    <div class='danger-card-body' align=\"center\">\n                        <div class='row'>\n                            <table width='100%'>\n                                <tr>\n                                    <td width='100%' align=\"center\">\n                                        <button class='btn danger-card-button big-text' id=\"restartDmaButton\" onclick=\"restartDma()\" >Restart DMA</button>\n                                    </td>\n                                </tr>\n                            </table>\n                        </div>\n                    </div>\n                </div>\n",
+        "template": "                <div class='danger-card'>\n                    <div class='row'>\n                        <div class='col-md-2'>\n                        </div>\n                        <div class='col-md-8'>\n                            <p class='danger-card-title'>Danger Zone</p>\n                         </div>\n                        <div class='col-md-2'>\n                        </div>\n                    </div>\n                    <div class='danger-card-body' align=\"center\">\n                        <div class='row'>\n                            <table width='100%'>\n                                <tr>\n                                    <td width='100%' align=\"center\">\n                                        <button class='btn danger-card-button big-text' id=\"restartTrayButton\" onclick=\"restartTray()\" >Restart Tray</button>\n                                    </td>\n                                </tr>\n                            </table>\n                        </div>\n                    </div>\n                </div>\n",
         "output": "str",
         "x": 1010,
-        "y": 1380,
+        "y": 420,
         "wires": [
             [
-                "e8fcfdd3.ae407"
+                "69654ec9.a3fc5"
             ]
         ]
     },
     {
-        "id": "d6a8ff2a.f4acd",
+        "id": "3a2cf37f.46415c",
+        "type": "template",
+        "z": "5d5fc264.fc823c",
+        "name": "script.dangerZone",
+        "field": "payload.script.dangerZone",
+        "fieldType": "msg",
+        "format": "javascript",
+        "syntax": "mustache",
+        "template": "// dangerZone JavaScript\n        function restartTray()\n        {\n            optionDialog('Danger! Will Robinson, Danger!', 'Restart Tray', 'This should not be done lightly', ['Reset Tray','Cancel'], [function (){restartTrayButtonPress();}, function (){$( \"#optionDialog\" ).dialog( \"close\" );}]);\n        }\n        function restartTrayButtonPress()\n        {\n            $( \"#optionDialog\" ).dialog( \"close\" );\n            var mqttMessage = \n            {\n                topic   : restfulDevice.project + '/' +  restfulDevice.deviceType + '/' +  restfulDevice.name + '/restartTray',\n                payload :  1\n            };\n            checkLogin(sendSettingToMqtt, mqttMessage);\n        }\n",
+        "output": "str",
+        "x": 690,
+        "y": 420,
+        "wires": [
+            [
+                "e3a86065.4a258"
+            ]
+        ]
+    },
+    {
+        "id": "43e2dd55.388a54",
+        "type": "http in",
+        "z": "5d5fc264.fc823c",
+        "name": "/",
+        "url": "/",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 540,
+        "wires": [
+            [
+                "6b3a1c87.176244"
+            ]
+        ]
+    },
+    {
+        "id": "f208bc6d.4ab34",
+        "type": "template",
+        "z": "5d5fc264.fc823c",
+        "name": "Body",
+        "field": "payload.body",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "<!-- Body HTML -->\n    <div class='container' width=\"100%\">\n        <div class='row vert-pad' >\n            <div class='col-md-12'>\n                <a class=\"btn jumbotron-button btn-block big-text bold-text\" width='80%' href=\"/app?name=01\" >\n                    <table width=\"100%\" alight=\"left\">\n                        <tr>\n                            <td width=\"30%\" align='center'> <img src=\"/img/cosmicYellow.png\" height=\"70px\"/></td>\n                            <td width=\"70%\" align=\"left\">Cosmic Interval 01</td>\n                        </tr>\n                    </table>\n                </a>\n            </div>\n        </div>\n    </div>",
+        "output": "str",
+        "x": 790,
+        "y": 540,
+        "wires": [
+            [
+                "b17a5dbc.ac6e2"
+            ]
+        ]
+    },
+    {
+        "id": "da73fad7.591248",
+        "type": "template",
+        "z": "5d5fc264.fc823c",
+        "name": "Title",
+        "field": "payload.title",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "Cosmic Interval",
+        "output": "str",
+        "x": 510,
+        "y": 540,
+        "wires": [
+            [
+                "72c64b87.ad2484"
+            ]
+        ]
+    },
+    {
+        "id": "6b3a1c87.176244",
+        "type": "template",
+        "z": "5d5fc264.fc823c",
+        "name": "JavaScript",
+        "field": "payload.javascript",
+        "fieldType": "msg",
+        "format": "javascript",
+        "syntax": "mustache",
+        "template": "        useWebSockets(false);\n        function onDocumentReady()\n        {\n        }\n        function onWebSocketOpen()\n        {\n        }\n        function onWebSocketClose()\n        {\n            \n        }\n        function onWebSocketMessage(msg)\n        {\n        }\n\n",
+        "output": "str",
+        "x": 370,
+        "y": 540,
+        "wires": [
+            [
+                "da73fad7.591248"
+            ]
+        ]
+    },
+    {
+        "id": "72c64b87.ad2484",
+        "type": "template",
+        "z": "5d5fc264.fc823c",
+        "name": "navBarIcon",
+        "field": "payload.navBarIcon",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "cosmicYellow.png",
+        "output": "str",
+        "x": 650,
+        "y": 540,
+        "wires": [
+            [
+                "f208bc6d.4ab34"
+            ]
+        ]
+    },
+    {
+        "id": "b17a5dbc.ac6e2",
+        "type": "subflow:6a402d92.12d7c4",
+        "z": "5d5fc264.fc823c",
+        "name": "",
+        "x": 950,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "45e901e9.5924d",
+        "type": "link out",
+        "z": "5d5fc264.fc823c",
+        "name": "Settings Out",
+        "links": [
+            "fa6d12fa.09e59"
+        ],
+        "x": 1115,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "5fe17245.3ca2ec",
+        "type": "link out",
+        "z": "5d5fc264.fc823c",
+        "name": "Token Check",
+        "links": [
+            "b2130296.d739c"
+        ],
+        "x": 1115,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "fa6d12fa.09e59",
+        "type": "link in",
+        "z": "ac85ba6c.c4f548",
+        "name": "cube-01 Settings In",
+        "links": [
+            "45e901e9.5924d"
+        ],
+        "x": 75,
+        "y": 200,
+        "wires": [
+            [
+                "83b1e82f.502058"
+            ]
+        ]
+    },
+    {
+        "id": "b2130296.d739c",
+        "type": "link in",
+        "z": "ac85ba6c.c4f548",
+        "name": "cube-01 to websocket",
+        "links": [
+            "5fe17245.3ca2ec"
+        ],
+        "x": 1155,
+        "y": 520,
+        "wires": [
+            [
+                "dd844957.92fc88"
+            ]
+        ]
+    },
+    {
+        "id": "91225404.2fb3e8",
         "type": "function",
-        "z": "5f562f66.a301e",
-        "name": "Decode Data",
-        "func": "var ib;\nvar device = flow.get('device');\nvar dataView     = new DataView(new ArrayBuffer(4));\n\nfor (ib = 0; ib < 4; ++ib)   dataView.setUint8(ib, msg.payload[0 * 4 + 3 - ib]);\ndevice.interval.value = dataView.getInt32(0);\nfor (ib = 0; ib < 4; ++ib)   dataView.setUint8(ib, msg.payload[1 * 4 + 3 - ib]);\ndevice.avgInterval.value = Math.round(dataView.getFloat32(0));\nfor (ib = 0; ib < 4; ++ib)   dataView.setUint8(ib, msg.payload[2 * 4 + 3 - ib]);\ndevice.cpm.value = Math.round(10.0 * dataView.getFloat32(0)) /10.0;\n\ndevice.linkQuality.value     = flow.get('linkQuality');\ndevice.signalLevel.value     = flow.get('signalLevel');\ndevice.bt0RSSI.value         = flow.get('bt0RSSI');\n\nreturn {topic : 'reading', payload : device};\n",
+        "z": "5d5fc264.fc823c",
+        "name": "Set Name And Device Type",
+        "func": "msg.payload['script'] = {};\nmsg.payload['script']['name'] = msg.payload.name\nmsg.payload['script']['deviceType'] = 'basic';\nmsg.payload['script']['project'] = global.get('project');\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 470,
+        "x": 320,
+        "y": 220,
+        "wires": [
+            [
+                "789e5a52.c4f944"
+            ]
+        ]
+    },
+    {
+        "id": "2f8acedc.6cd972",
+        "type": "template",
+        "z": "5d5fc264.fc823c",
+        "name": "navBarIcon",
+        "field": "payload.navBarIcon",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "cosmicYellow.png",
+        "output": "str",
+        "x": 270,
         "y": 300,
         "wires": [
             [
-                "9115ea87.0ca208"
+                "8b2cb09d.ff645"
             ]
         ]
     }
